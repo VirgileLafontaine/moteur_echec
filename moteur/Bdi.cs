@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,7 @@ namespace Moteur
         /*---------------------------------*/
         /*       Believes - Croyances      */
         /*---------------------------------*/
-        // Etat de la carte récupéré lors de la phase d'exploration
-        public int[] Carte { get; set; }
-
-        // Position de l'agent sur la carte
-        public int Position { get; set; }
-
-        // Nombre d'actions à exécuter avant de faire une nouvelle exploration
-        // Initialement, ce paramètre sera fixé à 1
-        public int NbActions { get; set; }
+        public Environnement EtatCourant;
 
         /*---------------------------------*/
         /*             Intentions          */

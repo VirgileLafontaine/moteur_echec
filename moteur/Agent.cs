@@ -44,18 +44,7 @@ namespace Moteur
         public Agent(Environnement env, AlgoExploration exploration)
         {
             _environnement = env;
-
-            switch (exploration)
-            {
-                case AlgoExploration.LARGEUR:
-                    _exploration = new RechercheEnLargeur();
-                    break;
-                case AlgoExploration.ASTAR:
-                    _exploration = new Astar();
-                    break;
-            }
         }
-
         /* Dois s'arreter */
         public void Arret()
         {

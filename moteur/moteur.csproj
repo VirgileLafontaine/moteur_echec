@@ -47,6 +47,7 @@
     <Compile Include="Bdi.cs" />
     <Compile Include="CapteursObservation.cs" />
     <Compile Include="Effecteurs.cs" />
+    <Compile Include="Environnement.cs" />
     <Compile Include="Exploration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
