@@ -42,7 +42,8 @@ namespace Moteur
               + poidsCavalier * (count(env.getCavalier(joueur) - env.getCavalier(adv)))
               + poidsFou * (count(env.getFou(joueur) - env.getFou(adv)))
               + poidsPion * (count(env.getPion(joueur) - env.getPion(adv)));
-
+            //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
+            //score = score materiel + mobilité
             return score;
         }
 
