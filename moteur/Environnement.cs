@@ -7,14 +7,15 @@ namespace Moteur
     public class Environnement
     {
         //--------------variables de l'environnement-------------//
-        private
-        List<Environnement> historiqueMouvement;
+        public List<Environnement> historiqueMouvement;
         ulong [] piecesBB; //bitboard des pieces
         ulong videBB;      //bitboard des positions vides
         ulong occupeBB;    //bitboard des positions occupées
         ulong blancBB;     //bitboard des positions joueur blanc
         ulong noirBB;      //bitboard des positions joueur noir
         enumCouleurJoueur joueurActuel;
+        public int[] board;
+        public string[] mvt;
 
         public
          enum enumPieces    //indice des bitboards des pieces dans le tableau de bitboards piecesBB
