@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Moteur
 {
@@ -40,8 +41,8 @@ namespace Moteur
                 res.Add(pos + signe * (-8));
 
             // Si premier mouvement : déplacement de 2 possible
-            if ((current_board[pos] == P && pos <= 55 && pos >= 48) ||
-                (current_board[pos] == -P && pos <= 15 && pos >= 8)) res.Add(pos + signe * (-16));
+            if ((current_board[pos] == P && pos <= 55 && pos >= 48 && current_board[pos-8] == 0) ||
+                (current_board[pos] == -P && pos <= 15 && pos >= 8 && current_board[pos+8] == 0)) res.Add(pos + signe * (-16));
 
             // Attaque en diagonale
             if (pos + signe * (-9) < 64 && pos + signe * (-9) >= 0 && signe * current_board[pos + signe * (-9)] < 0)
@@ -61,7 +62,7 @@ namespace Moteur
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Attaque colonne vers le bas
             for (int j = pos; j < 64; j += 8)
@@ -69,23 +70,23 @@ namespace Moteur
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Attaque ligne vers la gauche
-            for (int j = pos; j % 8 != 0; j -= 1)
+            for (int j = pos; (j+1) % 8 != 0; j -= 1)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Attaque ligne vers la droite
-            for (int j = pos; (j + 1) % 8 != 0; j += 1)
+            for (int j = pos; j% 8 != 0; j += 1)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
 
             return res;
@@ -114,36 +115,36 @@ namespace Moteur
         {
             ArrayList res = new ArrayList();
             // Diagonale haut gauche
-            for (int j = pos; j > 0 && j % 8 != 0; j -= 9)
+            for (int j = pos; j > 0 && (j+1) % 8 != 0; j -= 9)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Diagonale haut droite
-            for (int j = pos; j > 0 && (j + 1) % 8 != 0; j -= 7)
+            for (int j = pos; j > 0 && j % 8 != 0; j -= 7)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Diagonale bas gauche
-            for (int j = pos; j < 64 && j % 8 != 0; j += 7)
+            for (int j = pos; j < 64 && (j+1) % 8 != 0; j += 7)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
             // Diagonale bas droite
-            for (int j = pos; j < 64 && (j + 1) % 8 != 0; j += 9)
+            for (int j = pos; j < 64 && j % 8 != 0; j += 9)
             {
                 // Case vide ou avec un ennemi
                 if (signe * current_board[j] <= 0) res.Add(j);
                 // Case amie
-                if (signe * current_board[j] > 0) break;
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
             }
 
             return res;
@@ -153,19 +154,19 @@ namespace Moteur
         {
             fill_attack_board(current_board, signe);
             ArrayList res = new ArrayList();
-            if (pos - 9 > 0 && pos % 8 != 0 && current_board[pos - 9] == 0 && attack_board[pos - 9] == 0)
+            if (pos - 9 > 0 && pos % 8 != 0 && signe*current_board[pos - 9] <= 0 && attack_board[pos - 9] == 0)
                 res.Add(pos - 9);
-            if (pos - 8 > 0 && current_board[pos - 8] == 0 && attack_board[pos - 8] == 0) res.Add(pos - 8);
-            if (pos - 7 > 0 && (pos + 1) % 8 != 0 && current_board[pos - 7] == 0 && attack_board[pos - 7] == 0)
+            if (pos - 8 > 0 && signe*current_board[pos - 8] <= 0 && attack_board[pos - 8] == 0) res.Add(pos - 8);
+            if (pos - 7 > 0 && (pos + 1) % 8 != 0 && signe*current_board[pos - 7] <= 0 && attack_board[pos - 7] == 0)
                 res.Add(pos - 7);
-            if (pos - 1 > 0 && pos % 8 != 0 && current_board[pos - 1] == 0 && attack_board[pos - 1] == 0)
+            if (pos - 1 > 0 && pos % 8 != 0 && signe*current_board[pos - 1] <= 0 && attack_board[pos - 1] == 0)
                 res.Add(pos - 1);
-            if (pos + 1 < 64 && (pos + 1) != 0 && current_board[pos + 1] == 0 && attack_board[pos + 1] == 0)
+            if (pos + 1 < 64 && (pos + 1) != 0 && signe*current_board[pos + 1] <= 0 && attack_board[pos + 1] == 0)
                 res.Add(pos + 1);
-            if (pos + 7 < 64 && pos % 8 != 0 && current_board[pos + 7] == 0 && attack_board[pos + 7] == 0)
+            if (pos + 7 < 64 && pos % 8 != 0 && signe*current_board[pos + 7] <= 0 && attack_board[pos + 7] == 0)
                 res.Add(pos + 7);
-            if (pos + 8 < 64 && current_board[pos + 8] == 0 && attack_board[pos + 8] == 0) res.Add(pos + 8);
-            if (pos + 9 < 64 && (pos + 1) % 8 != 0 && current_board[pos + 9] == 0 && attack_board[pos + 9] == 0)
+            if (pos + 8 < 64 && signe*current_board[pos + 8] <= 0 && attack_board[pos + 8] == 0) res.Add(pos + 8);
+            if (pos + 9 < 64 && (pos + 1) % 8 != 0 && signe*current_board[pos + 9] <= 0 && attack_board[pos + 9] == 0)
                 res.Add(pos + 9);
             return res;
         }
@@ -173,10 +174,10 @@ namespace Moteur
         // Pb : est-ce que je marque comme attaquable une case avec quelqu'un dessus ?
         private void fill_attack_board(int[] current_board, int signe)
         {
+            int monRoi = Array.IndexOf(current_board, signe * R);
+            current_board[monRoi] = 0;
             for (int i = 0; i < current_board.Length; i++)
             {
-                int monRoi = Array.IndexOf(current_board, signe * R);
-                current_board[monRoi] = 0;
                 // Pièces adverses
                 switch (signe * current_board[i])
                 {
@@ -190,6 +191,7 @@ namespace Moteur
                         break;
                     case -TG:
                     case -TD:
+                        /*
                         // Attaque colonne vers le haut
                         for (int j = i; j > 0 && current_board[j] == 0; j -= 8)
                         {
@@ -211,9 +213,16 @@ namespace Moteur
                             attack_board[j] = 1;
                         }
                         attack_board[i] = 0;
+                        */
+                        foreach (int pos in mvt_tour(current_board, i, -signe))
+                        {
+                            attack_board[pos] = 1;
+                        }
+                        attack_board[i] = 0;
                         break;
                     case -CD:
                     case -CG:
+                        /*
                         if (i - 17 > 0 && i % 8 != 0 && current_board[i - 17] == 0) attack_board[i - 17] = 1;
                         if (i - 15 > 0 && (i + 1) % 8 != 0 && current_board[i - 15] == 0) attack_board[i - 15] = 1;
                         if (i - 10 > 0 && (i) % 8 != 0 && (i - 1) % 8 != 0 && current_board[i - 10] == 0)
@@ -226,8 +235,15 @@ namespace Moteur
                             attack_board[i + 10] = 1;
                         if (i + 15 < 64 && i % 8 != 0 && current_board[i + 15] == 0) attack_board[i + 15] = 1;
                         if (i + 17 < 64 && (i + 1) % 8 != 0 && current_board[i + 17] == 0) attack_board[i + 17] = 1;
+                        */
+                        foreach (int pos in mvt_cavalier(current_board, i, -signe))
+                        {
+                            attack_board[pos] = 1;
+                        }
+                        attack_board[i] = 0;
                         break;
                     case -F:
+                        /*
                         // Diagonale haut gauche
                         for (int j = i; j > 0 && j % 8 != 0 && current_board[j] == 0; j -= 9)
                         {
@@ -249,8 +265,15 @@ namespace Moteur
                             attack_board[j] = 1;
                         }
                         attack_board[i] = 0;
+                        */
+                        foreach (int pos in mvt_fou(current_board, i, -signe))
+                        {
+                            attack_board[pos] = 1;
+                        }
+                        attack_board[i] = 0;
                         break;
                     case -D:
+                        /*
                         // TO DO : factoriser car c/cdu fou et de la tour
                         // Diagonale haut gauche
                         for (int j = i; j > 0 && j % 8 != 0 && current_board[j] == 0; j -= 9)
@@ -293,6 +316,16 @@ namespace Moteur
                             attack_board[j] = 1;
                         }
                         attack_board[i] = 0;
+                        */
+                        foreach (int pos in mvt_tour(current_board, i, -signe))
+                        {
+                            attack_board[pos] = 1;
+                        }
+                        foreach (int pos in mvt_fou(current_board, i, -signe))
+                        {
+                            attack_board[pos] = 1;
+                        }
+                        attack_board[i] = 0;
                         break;
                     case -R:
                         if (i - 9 > 0 && i % 8 != 0 && current_board[i - 9] == 0) attack_board[i - 9] = 1;
@@ -305,8 +338,8 @@ namespace Moteur
                         if (i + 9 < 64 && (i + 1) % 8 != 0 && current_board[i + 9] == 0) attack_board[i + 9] = 1;
                         break;
                 }
-                current_board[monRoi] = signe * R;
             }
+            current_board[monRoi] = signe * R;
         }
 
         private Queue fill_queue(ArrayList indexTab, int piece, int[] current_board, int cur_pos, Environnement cur_env)
@@ -320,6 +353,7 @@ namespace Moteur
                 aux_board[next_pos] = piece;
                 env.board = (int[]) aux_board.Clone();
                 env.mvt = new string[] {tabCoord[cur_pos], tabCoord[next_pos], ""};
+                env.historiqueMouvement =new List<Environnement>();
                 env.historiqueMouvement.Add(cur_env);
                 auxQueue.Enqueue(env);
             }
