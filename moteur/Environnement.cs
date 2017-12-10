@@ -6,14 +6,17 @@ namespace Moteur
 {
     public class Environnement
     {
+        public static int joueurBlanc = 1;
+        public static int joueurNoir = -1;
+
         //--------------variables de l'environnement-------------//
-        public List<Environnement> historiqueMouvement;
+        public List<Environnement> historiqueMouvement = new List<Environnement>();
         ulong [] piecesBB; //bitboard des pieces
         ulong videBB;      //bitboard des positions vides
         ulong occupeBB;    //bitboard des positions occupées
         ulong blancBB;     //bitboard des positions joueur blanc
         ulong noirBB;      //bitboard des positions joueur noir
-        enumCouleurJoueur joueurActuel;
+        public enumCouleurJoueur joueurActuel;
         public int[] board;
         public string[] mvt;
         public int score;
@@ -37,14 +40,7 @@ namespace Moteur
         public enum enumCouleurJoueur
         {
             blanc,
-            noir
-        }
-
-
-        //constructeur de l'environnement par défaut
-        public Environnement()
-        {
-
+            noir,
         }
         //-----------------------getters-----------------------//
         public ulong getPieceSet(enumPieces p)

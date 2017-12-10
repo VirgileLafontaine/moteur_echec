@@ -94,18 +94,18 @@ namespace Moteur
         private ArrayList mvt_cavalier(int[] current_board, int pos, int signe)
         {
             ArrayList res = new ArrayList();
-            if (pos - 17 > 0 && pos % 8 != 0 && signe * current_board[pos - 17] < 0) res.Add(pos - 17);
-            if (pos - 15 > 0 && (pos + 1) % 8 != 0 && signe * current_board[pos - 15] < 0) res.Add(pos - 15);
-            if (pos - 10 > 0 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos - 10] < 0)
+            if (pos - 17 > 0 && pos % 8 != 0 && signe * current_board[pos - 17] <= 0) res.Add(pos - 17);
+            if (pos - 15 > 0 && (pos + 1) % 8 != 0 && signe * current_board[pos - 15] <= 0) res.Add(pos - 15);
+            if (pos - 10 > 0 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos - 10] <= 0)
                 res.Add(pos - 10);
-            if (pos - 6 > 0 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos - 6] < 0)
+            if (pos - 6 > 0 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos - 6] <= 0)
                 res.Add(pos - 6);
-            if (pos + 6 < 64 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos + 6] < 0)
+            if (pos + 6 < 64 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos + 6] <= 0)
                 res.Add(pos + 6);
-            if (pos + 10 < 64 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos + 10] < 0)
+            if (pos + 10 < 64 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos + 10] <= 0)
                 res.Add(pos + 10);
-            if (pos + 15 < 64 && pos % 8 != 0 && signe * current_board[pos + 15] < 0) res.Add(pos + 15);
-            if (pos + 17 < 64 && (pos + 1) % 8 != 0 && signe * current_board[pos + 17] < 0) res.Add(pos + 17);
+            if (pos + 15 < 64 && pos % 8 != 0 && signe * current_board[pos + 15] <= 0) res.Add(pos + 15);
+            if (pos + 17 < 64 && (pos + 1) % 8 != 0 && signe * current_board[pos + 17] <= 0) res.Add(pos + 17);
 
             return res;
         }
@@ -305,7 +305,7 @@ namespace Moteur
                         if (i + 9 < 64 && (i + 1) % 8 != 0 && current_board[i + 9] == 0) attack_board[i + 9] = 1;
                         break;
                 }
-                current_board[monRoi] = 1;
+                current_board[monRoi] = signe * R;
             }
         }
 
@@ -338,36 +338,77 @@ namespace Moteur
                 {
                     case P:
                         ArrayList indexP = mvt_pion(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexP, signe * P, current_board, i, cur_env));
+                        if (indexP.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexP, signe * P, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case TG:
                         ArrayList indexTG = mvt_tour(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexTG, signe * TG, current_board, i, cur_env));
+                        if (indexTG.Count != 0) {
+                            foreach (var e in fill_queue(indexTG, signe * TG, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case TD:
                         ArrayList indexTD = mvt_tour(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexTD, signe * TD, current_board, i, cur_env));
+                        if (indexTD.Count != 0) {
+                            foreach (var e in fill_queue(indexTD, signe * TD, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case CG:
                         ArrayList indexCG = mvt_cavalier(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexCG, signe * CG, current_board, i, cur_env));
+                        if (indexCG.Count != 0) {
+                            foreach (var e in fill_queue(indexCG, signe * CG, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case CD:
                         ArrayList indexCD = mvt_cavalier(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexCD, signe * CD, current_board, i, cur_env));
+                        if (indexCD.Count != 0) {
+                            foreach (var e in fill_queue(indexCD, signe * CD, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case F:
                         ArrayList indexF = mvt_fou(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexF, signe * F, current_board, i, cur_env));
+                        if (indexF.Count != 0) {
+                            foreach (var e in fill_queue(indexF, signe * F, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case D:
                         ArrayList indexD = mvt_tour(current_board, i, signe);
                         indexD.AddRange(mvt_fou(current_board, i, signe));
-                        prochainsEnv.Enqueue(fill_queue(indexD, signe * D, current_board, i, cur_env));
+                        if (indexD.Count != 0) {
+                            foreach (var e in fill_queue(indexD, signe * D, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                     case R:
                         ArrayList indexR = mvt_roi(current_board, i, signe);
-                        prochainsEnv.Enqueue(fill_queue(indexR, signe * R, current_board, i, cur_env));
+                        if (indexR.Count != 0) {
+                            foreach (var e in fill_queue(indexR, signe * R, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
                         break;
                 }
             }

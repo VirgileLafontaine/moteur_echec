@@ -119,9 +119,16 @@ namespace Moteur
             bestScore.score = -999999;
             if (alpha > beta) {return env;}
             if (profondeurRestante == 0) return rechercheCalme(alpha, beta, env);
-            listeMouvements = mov.prochainsEnvironnements(env, (int)env.getJoueur()); //bug retourne liste vide
+            int joueurActuel;
+            if ((int)env.getJoueur() == 0) joueurActuel = 1; else joueurActuel = -1;
+            listeMouvements = mov.prochainsEnvironnements(env, joueurActuel); //B
             foreach (Environnement mouvement in listeMouvements)
             {
+                if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                {
+                    mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
+                }
+                else mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;
                 env.score = alphaBeta(mouvement,-beta, -alpha, profondeurRestante - 1).score * (-1);
                 if (env.score >= beta)
                     return env; 
