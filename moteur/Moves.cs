@@ -41,13 +41,13 @@ namespace Moteur
                 res.Add(pos + signe * (-8));
 
             // Si premier mouvement : déplacement de 2 possible
-            if ((current_board[pos] == P && pos <= 55 && pos >= 48 && current_board[pos-8] == 0) ||
-                (current_board[pos] == -P && pos <= 15 && pos >= 8 && current_board[pos+8] == 0)) res.Add(pos + signe * (-16));
+            if ((current_board[pos] == P && pos <= 55 && pos >= 48 && current_board[pos-8] == 0 && current_board[pos-16] == 0) ||
+                (current_board[pos] == -P && pos <= 15 && pos >= 8 && current_board[pos+8] == 0 && current_board[pos+16] == 0)) res.Add(pos + signe * (-16));
 
             // Attaque en diagonale
-            if (pos + signe * (-9) < 64 && pos + signe * (-9) >= 0 && signe * current_board[pos + signe * (-9)] < 0)
+            if (pos + signe * (-9) < 64 && pos + signe * (-9) >= 0 && pos%8 !=0 && signe * current_board[pos + signe * (-9)] < 0)
                 res.Add(pos + signe * (-9));
-            if (pos + signe * (-7) < 64 && pos + signe * (-7) >= 0 && signe * current_board[pos + signe * (-7)] < 0)
+            if (pos + signe * (-7) < 64 && pos + signe * (-7) >= 0 && (pos+1)%8 !=0 && signe * current_board[pos + signe * (-7)] < 0)
                 res.Add(pos + signe * (-7));
 
             return res;
