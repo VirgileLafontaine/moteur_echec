@@ -43,10 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Agent.cs" />
-    <Compile Include="Bdi.cs" />
-    <Compile Include="CapteursObservation.cs" />
-    <Compile Include="Effecteurs.cs" />
     <Compile Include="Environnement.cs" />
     <Compile Include="Exploration.cs" />
     <Compile Include="Moves.cs" />

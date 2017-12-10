@@ -16,9 +16,8 @@ namespace Moteur
         enumCouleurJoueur joueurActuel;
         public int[] board;
         public string[] mvt;
-
-        public
-         enum enumPieces    //indice des bitboards des pieces dans le tableau de bitboards piecesBB
+        public int score;
+        public enum enumPieces    //indice des bitboards des pieces dans le tableau de bitboards piecesBB
         {
             iBlanc,     // une piece blanche
             iNoir,     // une piece noire
@@ -41,6 +40,12 @@ namespace Moteur
             noir
         }
 
+
+        //constructeur de l'environnement par défaut
+        public Environnement()
+        {
+
+        }
         //-----------------------getters-----------------------//
         public ulong getPieceSet(enumPieces p)
         {

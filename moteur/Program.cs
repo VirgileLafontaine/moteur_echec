@@ -29,6 +29,9 @@ namespace Moteur
                                                    "a2","b2","c2","d2","e2","f2","g2","h2",
                                                    "a1","b1","c1","d1","e1","f1","g1","h1" };
 
+                Exploration expl = new Exploration();
+                Environnement env = new Environnement();
+
                 while (!stop)
                 {
                     using (var mmf = MemoryMappedFile.OpenExisting("plateau"))
@@ -77,14 +80,15 @@ namespace Moteur
                                 {
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
-
-                                Random rnd = new Random();
+                                env.board = tabVal;
+                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,2);
+                                /*Random rnd = new Random();
                                 coord[0] = mesPieces[rnd.Next(mesPieces.Count)];
                                 //coord[0] = "b7";
                                 //coord[1] = "b8";
                                 coord[1] = tabCoord[rnd.Next(reste.Count)];
                                 //coord[2] = "P";
-
+                                */
 
                                 /********************************************************************************************************/
                                 /********************************************************************************************************/

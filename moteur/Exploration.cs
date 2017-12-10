@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,10 @@ namespace Moteur
                 return (int)x;
             }
 
+        public Moves mov = new Moves();
+
     //evaluation d'un environnement
-    public int evaluer(Environnement env)
+    public int evaluerbb(Environnement env)
         {
             Environnement.enumCouleurJoueur adv;
             Environnement.enumCouleurJoueur joueur = env.getJoueur();
@@ -34,7 +37,7 @@ namespace Moteur
             }
             else
             {
-                adv = Environnement.enumCouleurJoueur.noir;
+                adv = Environnement.enumCouleurJoueur.blanc;
             }
             int score = poidsRoi * (count(env.getRoi(joueur) - env.getRoi(adv)))
               + poidsReine * (count(env.getReine(joueur) - env.getReine(adv)))
@@ -47,36 +50,102 @@ namespace Moteur
             return score;
         }
 
-        public int alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
+        public int evaluer(Environnement env)
         {
-            Queue<Environnement> listeMouvements = new Queue<Environnement>();
             int score = 0;
-            if (alpha > beta) {return -1;}
-            int bestscore = -99999;
-            if (profondeurRestante == 0) return rechercheCalme(alpha, beta, env);
-            //TO DO : générer les environnements avec le dernier mouvement et historique mis a jour
-            foreach (Environnement mouvement in listeMouvements)
-            {
-                score = -alphaBeta(mouvement,-beta, -alpha, profondeurRestante - 1);
-                if (score >= beta)
-                    return score; 
-                if (score > bestscore)
-                {
-                    bestscore = score;
-                    if (score > alpha)
-                        alpha = score;
+            foreach ( int i in env.board) {
+                switch (i) {
+                    case 1 :
+                        score += poidsPion;
+                        break;
+                    case 21:
+                        score += poidsTour;
+                        break;
+                    case 22:
+                        score += poidsTour;
+                        break;
+                    case 31:
+                        score += poidsCavalier;
+                        break;
+                    case 32:
+                        score += poidsCavalier;
+                        break;
+                    case 4:
+                        score += poidsFou;
+                        break;
+                    case 5:
+                        score += poidsReine;
+                        break;
+                    case 6:
+                        score += poidsRoi;
+                        break;
+                    case -1:
+                        score -= poidsPion;
+                        break;
+                    case -21:
+                        score -= poidsTour;
+                        break;
+                    case -22:
+                        score -= poidsTour;
+                        break;
+                    case -31:
+                        score -= poidsCavalier;
+                        break;
+                    case -32:
+                        score -= poidsCavalier;
+                        break;
+                    case -4:
+                        score -= poidsFou;
+                        break;
+                    case -5:
+                        score -= poidsReine;
+                        break;
+                    case -6:
+                        score -= poidsRoi;
+                        break;
+                    default:
+                        break;
                 }
             }
-            return bestscore;
+            //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
+            //score = score materiel + mobilité
+            return score;
         }
-        public int rechercheCalme(int alpha, int beta, Environnement env)
+
+        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
         {
-            int score = 0;//pas sur
+            Queue listeMouvements = new Queue();
+            Environnement bestScore = new Environnement();
+            bestScore.score = -999999;
+            if (alpha > beta) {return env;}
+            if (profondeurRestante == 0) return rechercheCalme(alpha, beta, env);
+            listeMouvements = mov.prochainsEnvironnements(env, (int)env.getJoueur()); //bug retourne liste vide
+            foreach (Environnement mouvement in listeMouvements)
+            {
+                env.score = alphaBeta(mouvement,-beta, -alpha, profondeurRestante - 1).score * (-1);
+                if (env.score >= beta)
+                    return env; 
+                if (env.score > bestScore.score)
+                {
+                    bestScore = env;
+                    if (env.score > alpha)
+                        alpha = env.score;
+                }
+            }
+            return bestScore;
+        }
+        public Environnement rechercheCalme(int alpha, int beta, Environnement env)
+        {
             int standPat = evaluer(env);
             if (standPat >= beta)
-                return beta;
+            {
+                env.score = beta;
+                return env;
+            }
             if (alpha < standPat)
-                alpha = standPat;
+            {
+                env.score = standPat;
+            }
                /*
             until(every_capture_has_been_examined)  {
                 MakeCapture();
@@ -88,8 +157,7 @@ namespace Moteur
                 if (score > alpha)
                     alpha = score;
             }*/
-            return alpha;
+            return env;
             }
         }
     }
-}
