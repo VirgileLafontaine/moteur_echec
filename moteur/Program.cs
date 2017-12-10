@@ -81,7 +81,7 @@ namespace Moteur
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
                                 env.board = tabVal;
-                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,3);
+                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur);
                                 while (choix.historiqueMouvement[0].mvt != null)
                                 {
                                         choix = choix.historiqueMouvement[0];
