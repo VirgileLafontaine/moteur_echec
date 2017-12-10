@@ -114,11 +114,13 @@ namespace Moteur
 
         public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
         {
+            int a = alpha;
+            int b = beta;
             Queue listeMouvements = new Queue();
             Environnement bestScore = new Environnement();
             bestScore.score = -999999;
-            if (alpha > beta) {return env;}
-            if (profondeurRestante == 0) return rechercheCalme(alpha, beta, env);
+            if (a > b) {return env;}
+            if (profondeurRestante == 0) return rechercheCalme(a, b, env);
             int joueurActuel;
             if ((int)env.getJoueur() == 0) joueurActuel = 1; else joueurActuel = -1;
             listeMouvements = mov.prochainsEnvironnements(env, joueurActuel); //B
@@ -129,7 +131,8 @@ namespace Moteur
                     mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
                 }
                 else mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;
-                env.score = alphaBeta(mouvement,-beta, -alpha, profondeurRestante - 1).score * (-1);
+                env = alphaBeta(mouvement, -b, -a, profondeurRestante - 1);
+                env.score = env.score * (-1);
                 if (env.score >= beta)
                     return env; 
                 if (env.score > bestScore.score)

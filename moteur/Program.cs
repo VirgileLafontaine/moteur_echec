@@ -31,7 +31,7 @@ namespace Moteur
 
                 Exploration expl = new Exploration();
                 Environnement env = new Environnement();
-
+                int profondeur = 3;
                 while (!stop)
                 {
                     using (var mmf = MemoryMappedFile.OpenExisting("plateau"))
@@ -81,7 +81,12 @@ namespace Moteur
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
                                 env.board = tabVal;
-                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,2);
+                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,3);
+                                while (choix.historiqueMouvement[0].mvt != null)
+                                {
+                                        choix = choix.historiqueMouvement[0];
+                                }
+                                coord = choix.mvt;
                                 /*Random rnd = new Random();
                                 coord[0] = mesPieces[rnd.Next(mesPieces.Count)];
                                 //coord[0] = "b7";
