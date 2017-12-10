@@ -122,8 +122,15 @@ namespace Moteur
             if (a > b) {return env;}
             if (profondeurRestante == 0) return rechercheCalme(a, b, env);
             int joueurActuel;
-            if ((int)env.getJoueur() == 0) joueurActuel = 1; else joueurActuel = -1;
-            listeMouvements = mov.prochainsEnvironnements(env, joueurActuel); //B
+            if ((int)env.getJoueur() == 0)
+            {
+                joueurActuel = 1;
+            }
+            else
+            {
+                joueurActuel = -1;
+            }
+            listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
             foreach (Environnement mouvement in listeMouvements)
             {
                 if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
