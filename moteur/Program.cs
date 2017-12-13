@@ -84,11 +84,11 @@ namespace Moteur
                                 env.board = tabVal;
                                 bestScore.score = -999999;
                                 Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur, bestScore);
-                                while (choix.historiqueMouvement[0].mvt != null)
-                                {
-                                        choix = choix.historiqueMouvement[0];
+                                Environnement tmp = choix;
+                                while (tmp.historiqueMouvement.Count() != 0 && tmp.historiqueMouvement[0].mvt!=null) { 
+                                        tmp = tmp.historiqueMouvement[0];
                                 }
-                                coord = choix.mvt;
+                                coord = tmp.mvt;
                                 /*Random rnd = new Random();
                                 coord[0] = mesPieces[rnd.Next(mesPieces.Count)];
                                 //coord[0] = "b7";

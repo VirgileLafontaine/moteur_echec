@@ -53,48 +53,51 @@ namespace Moteur
         public int evaluer(Environnement env, bool debutPartie)
         {
             int score = 0;
+            int ind = -1;
             int scorePosition = 0;
             if (env.getJoueur() == Environnement.enumCouleurJoueur.blanc) {
+               
                 foreach (int i in env.board)
                 {
+                    ind++;
                     switch (i)
                     {
                         case 1:
                             score += poidsPion;
-                            scorePosition += TablesEvalMouvement.pion[i];
+                            scorePosition += TablesEvalMouvement.pion[ind];
                             break;
                         case 21:
                             score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour[i];
+                            scorePosition += TablesEvalMouvement.tour[ind];
                             break;
                         case 22:
                             score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour[i];
+                            scorePosition += TablesEvalMouvement.tour[ind];
                             break;
                         case 31:
                             score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier[i];
+                            scorePosition += TablesEvalMouvement.cavalier[ind];
                             break;
                         case 32:
                             score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier[i];
+                            scorePosition += TablesEvalMouvement.cavalier[ind];
                             break;
                         case 4:
                             score += poidsFou;
-                            scorePosition += TablesEvalMouvement.fou[i];
+                            scorePosition += TablesEvalMouvement.fou[ind];
                             break;
                         case 5:
                             score += poidsReine;
-                            scorePosition += TablesEvalMouvement.reine[i];
+                            scorePosition += TablesEvalMouvement.reine[ind];
                             break;
                         case 6:
                             score += poidsRoi;
                             if (debutPartie)
                             {
-                                scorePosition += TablesEvalMouvement.roiDebut[i];
+                                scorePosition += TablesEvalMouvement.roiDebut[ind];
                             }else
                             {
-                                scorePosition += TablesEvalMouvement.roiFin[i];
+                                scorePosition += TablesEvalMouvement.roiFin[ind];
                             }
                             break;
                         case -1:
@@ -130,6 +133,7 @@ namespace Moteur
             {
                 foreach (int i in env.board)
                 {
+                    ind++;
                     switch (i)
                     {
                         case 1:
@@ -158,41 +162,41 @@ namespace Moteur
                             break;
                         case -1:
                             score += poidsPion;
-                            scorePosition += TablesEvalMouvement.pion_adv[i];
+                            scorePosition += TablesEvalMouvement.pion_adv[ind];
                             break;
                         case -21:
                             score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour_adv[i];
+                            scorePosition += TablesEvalMouvement.tour_adv[ind];
                             break;
                         case -22:
                             score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour_adv[i];
+                            scorePosition += TablesEvalMouvement.tour_adv[ind];
                             break;
                         case -31:
                             score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier_adv[i];
+                            scorePosition += TablesEvalMouvement.cavalier_adv[ind];
                             break;
                         case -32:
                             score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier_adv[i];
+                            scorePosition += TablesEvalMouvement.cavalier_adv[ind];
                             break;
                         case -4:
                             score += poidsFou;
-                            scorePosition += TablesEvalMouvement.fou_adv[i];
+                            scorePosition += TablesEvalMouvement.fou_adv[ind];
                             break;
                         case -5:
                             score += poidsReine;
-                            scorePosition += TablesEvalMouvement.fou_adv[i];
+                            scorePosition += TablesEvalMouvement.fou_adv[ind];
                             break;
                         case -6:
                             score += poidsRoi;
                             if (debutPartie)
                             {
-                                scorePosition += TablesEvalMouvement.roiDebut_adv[i];
+                                scorePosition += TablesEvalMouvement.roiDebut_adv[ind];
                             }
                             else
                             {
-                                scorePosition += TablesEvalMouvement.roiFin_adv[i];
+                                scorePosition += TablesEvalMouvement.roiFin_adv[ind];
                             }
                             break;
                         default:
@@ -249,6 +253,7 @@ namespace Moteur
         public Environnement rechercheCalme(int alpha, int beta, Environnement env)
         {
             int standPat = evaluer(env, true);
+            Queue mouvementsCapture = new Queue();
             if (standPat >= beta)
             {
                 env.score = beta;
@@ -257,7 +262,9 @@ namespace Moteur
             if (alpha < standPat)
             {
                 env.score = standPat;
+                //alpha = standPat;
             }
+            //mouvementsCapture = mov.prochainsEnvironnementsCapture(env);
                /*
             until(every_capture_has_been_examined)  {
                 MakeCapture();

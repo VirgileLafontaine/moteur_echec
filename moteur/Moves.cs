@@ -53,6 +53,17 @@ namespace Moteur
 
             return res;
         }
+        private ArrayList mvt_pionC(int[] current_board, int pos, int signe)
+        {
+            ArrayList res = new ArrayList();
+            
+            // Attaque en diagonale
+            if (pos + signe * (-9) < 64 && pos + signe * (-9) >= 0 && pos % 8 != 0 && signe * current_board[pos + signe * (-9)] < 0)
+                res.Add(pos + signe * (-9));
+            if (pos + signe * (-7) < 64 && pos + signe * (-7) >= 0 && (pos + 1) % 8 != 0 && signe * current_board[pos + signe * (-7)] < 0)
+                res.Add(pos + signe * (-7));
+            return res;
+        }
 
         private ArrayList mvt_tour(int[] current_board, int pos, int signe)
         {
@@ -92,6 +103,44 @@ namespace Moteur
 
             return res;
         }
+        private ArrayList mvt_tourC(int[] current_board, int pos, int signe)
+        {
+            ArrayList res = new ArrayList();
+            // Attaque colonne vers le haut
+            for (int j = pos; j > 0; j -= 8)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Attaque colonne vers le bas
+            for (int j = pos; j < 64; j += 8)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Attaque ligne vers la gauche
+            for (int j = pos; (j + 1) % 8 != 0 || j == pos; j -= 1)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Attaque ligne vers la droite
+            for (int j = pos; j % 8 != 0 || j == pos; j += 1)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+
+            return res;
+        }
 
         private ArrayList mvt_cavalier(int[] current_board, int pos, int signe)
         {
@@ -108,6 +157,24 @@ namespace Moteur
                 res.Add(pos + 10);
             if (pos + 15 < 64 && pos % 8 != 0 && signe * current_board[pos + 15] <= 0) res.Add(pos + 15);
             if (pos + 17 < 64 && (pos + 1) % 8 != 0 && signe * current_board[pos + 17] <= 0) res.Add(pos + 17);
+
+            return res;
+        }
+        private ArrayList mvt_cavalierC(int[] current_board, int pos, int signe)
+        {
+            ArrayList res = new ArrayList();
+            if (pos - 17 > 0 && pos % 8 != 0 && signe * current_board[pos - 17] < 0) res.Add(pos - 17);
+            if (pos - 15 > 0 && (pos + 1) % 8 != 0 && signe * current_board[pos - 15] < 0) res.Add(pos - 15);
+            if (pos - 10 > 0 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos - 10] < 0)
+                res.Add(pos - 10);
+            if (pos - 6 > 0 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos - 6] < 0)
+                res.Add(pos - 6);
+            if (pos + 6 < 64 && (pos) % 8 != 0 && (pos - 1) % 8 != 0 && signe * current_board[pos + 6] < 0)
+                res.Add(pos + 6);
+            if (pos + 10 < 64 && (pos + 1) % 8 != 0 && (pos + 2) % 8 != 0 && signe * current_board[pos + 10] < 0)
+                res.Add(pos + 10);
+            if (pos + 15 < 64 && pos % 8 != 0 && signe * current_board[pos + 15] < 0) res.Add(pos + 15);
+            if (pos + 17 < 64 && (pos + 1) % 8 != 0 && signe * current_board[pos + 17] < 0) res.Add(pos + 17);
 
             return res;
         }
@@ -150,6 +217,44 @@ namespace Moteur
 
             return res;
         }
+        private ArrayList mvt_fouC(int[] current_board, int pos, int signe)
+        {
+            ArrayList res = new ArrayList();
+            // Diagonale haut gauche
+            for (int j = pos; j > 0 && (j + 1) % 8 != 0; j -= 9)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Diagonale haut droite
+            for (int j = pos; j > 0 && j % 8 != 0; j -= 7)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Diagonale bas gauche
+            for (int j = pos; j < 64 && (j + 1) % 8 != 0; j += 7)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+            // Diagonale bas droite
+            for (int j = pos; j < 64 && j % 8 != 0; j += 9)
+            {
+                // Case vide ou avec un ennemi
+                if (signe * current_board[j] < 0) res.Add(j);
+                // Case amie
+                if ((signe * current_board[j] > 0 && j != pos) || signe * current_board[j] < 0) break;
+            }
+
+            return res;
+        }
 
         private ArrayList mvt_roi(int[] current_board, int pos, int signe)
         {
@@ -167,6 +272,25 @@ namespace Moteur
                 res.Add(pos + 7);
             if (pos + 8 < 64 && signe*current_board[pos + 8] <= 0 && attack_board[pos + 8] == 0) res.Add(pos + 8);
             if (pos + 9 < 64 && (pos + 1) % 8 != 0 && signe*current_board[pos + 9] <= 0 && attack_board[pos + 9] == 0)
+                res.Add(pos + 9);
+            return res;
+        }
+        private ArrayList mvt_roiC(int[] current_board, int pos, int signe)
+        {
+            ArrayList res = new ArrayList();
+            if (pos - 9 > 0 && pos % 8 != 0 && signe * current_board[pos - 9] < 0 && attack_board[pos - 9] == 0)
+                res.Add(pos - 9);
+            if (pos - 8 > 0 && signe * current_board[pos - 8] < 0 && attack_board[pos - 8] == 0) res.Add(pos - 8);
+            if (pos - 7 > 0 && (pos + 1) % 8 != 0 && signe * current_board[pos - 7] < 0 && attack_board[pos - 7] == 0)
+                res.Add(pos - 7);
+            if (pos - 1 > 0 && pos % 8 != 0 && signe * current_board[pos - 1] < 0 && attack_board[pos - 1] == 0)
+                res.Add(pos - 1);
+            if (pos + 1 < 64 && (pos + 1) != 0 && signe * current_board[pos + 1] < 0 && attack_board[pos + 1] == 0)
+                res.Add(pos + 1);
+            if (pos + 7 < 64 && pos % 8 != 0 && signe * current_board[pos + 7] < 0 && attack_board[pos + 7] == 0)
+                res.Add(pos + 7);
+            if (pos + 8 < 64 && signe * current_board[pos + 8] < 0 && attack_board[pos + 8] == 0) res.Add(pos + 8);
+            if (pos + 9 < 64 && (pos + 1) % 8 != 0 && signe * current_board[pos + 9] < 0 && attack_board[pos + 9] == 0)
                 res.Add(pos + 9);
             return res;
         }
@@ -325,10 +449,19 @@ namespace Moteur
                 int[] aux_board = (int[]) current_board.Clone();
                 aux_board[cur_pos] = 0;
                 aux_board[next_pos] = piece;
+               /* if (cur_env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                {
+                    env.joueurActuel = Environnement.enumCouleurJoueur.noir;
+                }
+                else
+                {
+                    env.joueurActuel = Environnement.enumCouleurJoueur.blanc;
+                }*/
                 env.board = (int[]) aux_board.Clone();
                 env.mvt = new string[] {tabCoord[cur_pos], tabCoord[next_pos], ""};
                 env.historiqueMouvement =new List<Environnement>();
                 env.historiqueMouvement.Add(cur_env);
+               
                 auxQueue.Enqueue(env);
             }
             return auxQueue;
@@ -448,5 +581,107 @@ namespace Moteur
             
             return prochainsEnv;
         }
+        public Queue prochainsEnvironnementsCapture(Environnement cur_env)
+        {
+            int signe;
+            if (cur_env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+            {
+                signe = 1;
+            }else {
+                signe = -1;
+            }
+            int[] current_board = cur_env.board;
+            Queue prochainsEnv = new Queue();
+            for (int i = 0; i < current_board.Length; i++)
+            {
+                // Pièces adverses
+                switch (signe * current_board[i])
+                {
+                    case P:
+                        ArrayList indexP = mvt_pionC(current_board, i, signe);
+                        if (indexP.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexP, signe * P, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case TG:
+                        ArrayList indexTG = mvt_tourC(current_board, i, signe);
+                        if (indexTG.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexTG, signe * TG, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case TD:
+                        ArrayList indexTD = mvt_tourC(current_board, i, signe);
+                        if (indexTD.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexTD, signe * TD, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case CG:
+                        ArrayList indexCG = mvt_cavalierC(current_board, i, signe);
+                        if (indexCG.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexCG, signe * CG, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case CD:
+                        ArrayList indexCD = mvt_cavalierC(current_board, i, signe);
+                        if (indexCD.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexCD, signe * CD, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case F:
+                        ArrayList indexF = mvt_fouC(current_board, i, signe);
+                        if (indexF.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexF, signe * F, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case D:
+                        ArrayList indexD = mvt_tourC(current_board, i, signe);
+                        indexD.AddRange(mvt_fou(current_board, i, signe));
+                        if (indexD.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexD, signe * D, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                    case R:
+                        ArrayList indexR = mvt_roiC(current_board, i, signe);
+                        if (indexR.Count != 0)
+                        {
+                            foreach (var e in fill_queue(indexR, signe * R, current_board, i, cur_env))
+                            {
+                                prochainsEnv.Enqueue(e);
+                            }
+                        }
+                        break;
+                }
+            }
+            return prochainsEnv;
+        }
+
     }
 }
