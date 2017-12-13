@@ -227,8 +227,7 @@ namespace Moteur
             }
             listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
             foreach (Environnement mouvement in listeMouvements)
-            {
-                /*
+            {/*
                 if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
                 {
                     mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
@@ -240,7 +239,7 @@ namespace Moteur
                     env.score = env.score * (-1);
                 }
                 if (env.score >= beta)
-                    return env; 
+                    return env;
                 if (env.score > bestScore.score)
                 {
                     bestScore = env;

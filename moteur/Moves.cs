@@ -471,6 +471,13 @@ namespace Moteur
         public Queue prochainsEnvironnements(Environnement cur_env, int signe)
         {
             int[] current_board = cur_env.board;
+            if (cur_env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+            {
+                cur_env.joueurActuel = Environnement.enumCouleurJoueur.noir;
+            }else
+            {
+                cur_env.joueurActuel = Environnement.enumCouleurJoueur.blanc;
+            }
             Queue prochainsEnv = new Queue();
             
             fill_attack_board(current_board, signe);

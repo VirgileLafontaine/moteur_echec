@@ -89,13 +89,6 @@ namespace Moteur
                                         tmp = tmp.historiqueMouvement[0];
                                 }
                                 coord = tmp.mvt;
-                                /*Random rnd = new Random();
-                                coord[0] = mesPieces[rnd.Next(mesPieces.Count)];
-                                //coord[0] = "b7";
-                                //coord[1] = "b8";
-                                coord[1] = tabCoord[rnd.Next(reste.Count)];
-                                //coord[2] = "P";
-                                */
 
                                 /********************************************************************************************************/
                                 /********************************************************************************************************/
