@@ -50,75 +50,166 @@ namespace Moteur
             return score;
         }
 
-        public int evaluer(Environnement env)
+        public int evaluer(Environnement env, bool debutPartie)
         {
             int score = 0;
-            foreach ( int i in env.board) {
-                switch (i) {
-                    case 1 :
-                        score += poidsPion;
-                        break;
-                    case 21:
-                        score += poidsTour;
-                        break;
-                    case 22:
-                        score += poidsTour;
-                        break;
-                    case 31:
-                        score += poidsCavalier;
-                        break;
-                    case 32:
-                        score += poidsCavalier;
-                        break;
-                    case 4:
-                        score += poidsFou;
-                        break;
-                    case 5:
-                        score += poidsReine;
-                        break;
-                    case 6:
-                        score += poidsRoi;
-                        break;
-                    case -1:
-                        score -= poidsPion;
-                        break;
-                    case -21:
-                        score -= poidsTour;
-                        break;
-                    case -22:
-                        score -= poidsTour;
-                        break;
-                    case -31:
-                        score -= poidsCavalier;
-                        break;
-                    case -32:
-                        score -= poidsCavalier;
-                        break;
-                    case -4:
-                        score -= poidsFou;
-                        break;
-                    case -5:
-                        score -= poidsReine;
-                        break;
-                    case -6:
-                        score -= poidsRoi;
-                        break;
-                    default:
-                        break;
+            int scorePosition = 0;
+            if (env.getJoueur() == Environnement.enumCouleurJoueur.blanc) {
+                foreach (int i in env.board)
+                {
+                    switch (i)
+                    {
+                        case 1:
+                            score += poidsPion;
+                            scorePosition += TablesEvalMouvement.pion[i];
+                            break;
+                        case 21:
+                            score += poidsTour;
+                            scorePosition += TablesEvalMouvement.tour[i];
+                            break;
+                        case 22:
+                            score += poidsTour;
+                            scorePosition += TablesEvalMouvement.tour[i];
+                            break;
+                        case 31:
+                            score += poidsCavalier;
+                            scorePosition += TablesEvalMouvement.cavalier[i];
+                            break;
+                        case 32:
+                            score += poidsCavalier;
+                            scorePosition += TablesEvalMouvement.cavalier[i];
+                            break;
+                        case 4:
+                            score += poidsFou;
+                            scorePosition += TablesEvalMouvement.fou[i];
+                            break;
+                        case 5:
+                            score += poidsReine;
+                            scorePosition += TablesEvalMouvement.reine[i];
+                            break;
+                        case 6:
+                            score += poidsRoi;
+                            if (debutPartie)
+                            {
+                                scorePosition += TablesEvalMouvement.roiDebut[i];
+                            }else
+                            {
+                                scorePosition += TablesEvalMouvement.roiFin[i];
+                            }
+                            break;
+                        case -1:
+                            score -= poidsPion;
+                            break;
+                        case -21:
+                            score -= poidsTour;
+                            break;
+                        case -22:
+                            score -= poidsTour;
+                            break;
+                        case -31:
+                            score -= poidsCavalier;
+                            break;
+                        case -32:
+                            score -= poidsCavalier;
+                            break;
+                        case -4:
+                            score -= poidsFou;
+                            break;
+                        case -5:
+                            score -= poidsReine;
+                            break;
+                        case -6:
+                            score -= poidsRoi;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (int i in env.board)
+                {
+                    switch (i)
+                    {
+                        case 1:
+                            score -= poidsPion;
+                            break;
+                        case 21:
+                            score -= poidsTour;
+                            break;
+                        case 22:
+                            score -= poidsTour;
+                            break;
+                        case 31:
+                            score -= poidsCavalier;
+                            break;
+                        case 32:
+                            score -= poidsCavalier;
+                            break;
+                        case 4:
+                            score -= poidsFou;
+                            break;
+                        case 5:
+                            score -= poidsReine;
+                            break;
+                        case 6:
+                            score -= poidsRoi;
+                            break;
+                        case -1:
+                            score += poidsPion;
+                            scorePosition += TablesEvalMouvement.pion_adv[i];
+                            break;
+                        case -21:
+                            score += poidsTour;
+                            scorePosition += TablesEvalMouvement.tour_adv[i];
+                            break;
+                        case -22:
+                            score += poidsTour;
+                            scorePosition += TablesEvalMouvement.tour_adv[i];
+                            break;
+                        case -31:
+                            score += poidsCavalier;
+                            scorePosition += TablesEvalMouvement.cavalier_adv[i];
+                            break;
+                        case -32:
+                            score += poidsCavalier;
+                            scorePosition += TablesEvalMouvement.cavalier_adv[i];
+                            break;
+                        case -4:
+                            score += poidsFou;
+                            scorePosition += TablesEvalMouvement.fou_adv[i];
+                            break;
+                        case -5:
+                            score += poidsReine;
+                            scorePosition += TablesEvalMouvement.fou_adv[i];
+                            break;
+                        case -6:
+                            score += poidsRoi;
+                            if (debutPartie)
+                            {
+                                scorePosition += TablesEvalMouvement.roiDebut_adv[i];
+                            }
+                            else
+                            {
+                                scorePosition += TablesEvalMouvement.roiFin_adv[i];
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
             //score = score materiel + mobilité
-            return score;
+            return score + scorePosition;
         }
 
-        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
+        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante, Environnement bestScore)
         {
             int a = alpha;
             int b = beta;
             Queue listeMouvements = new Queue();
-            Environnement bestScore = new Environnement();
-            bestScore.score = -999999;
             if (a > b) {return env;}
             if (profondeurRestante == 0) return rechercheCalme(a, b, env);
             int joueurActuel;
@@ -133,13 +224,17 @@ namespace Moteur
             listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
             foreach (Environnement mouvement in listeMouvements)
             {
+                /*
                 if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
                 {
                     mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
                 }
-                else mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;
-                env = alphaBeta(mouvement, -b, -a, profondeurRestante - 1);
-                env.score = env.score * (-1);
+                else mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;*/
+                env = alphaBeta(mouvement, -b, -a, profondeurRestante - 1, bestScore);
+                if (env.joueurActuel == Environnement.enumCouleurJoueur.noir)
+                {
+                    env.score = env.score * (-1);
+                }
                 if (env.score >= beta)
                     return env; 
                 if (env.score > bestScore.score)
@@ -153,7 +248,7 @@ namespace Moteur
         }
         public Environnement rechercheCalme(int alpha, int beta, Environnement env)
         {
-            int standPat = evaluer(env);
+            int standPat = evaluer(env, true);
             if (standPat >= beta)
             {
                 env.score = beta;

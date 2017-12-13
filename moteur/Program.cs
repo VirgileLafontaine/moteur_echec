@@ -31,6 +31,7 @@ namespace Moteur
 
                 Exploration expl = new Exploration();
                 Environnement env = new Environnement();
+                Environnement bestScore = new Environnement();
                 int profondeur = 3;
                 while (!stop)
                 {
@@ -81,7 +82,8 @@ namespace Moteur
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
                                 env.board = tabVal;
-                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur);
+                                bestScore.score = -999999;
+                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur, bestScore);
                                 while (choix.historiqueMouvement[0].mvt != null)
                                 {
                                         choix = choix.historiqueMouvement[0];
