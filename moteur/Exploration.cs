@@ -10,199 +10,80 @@ namespace Moteur
 {
     public class Exploration
     {
+        private const int Pp = 10; //pion passant
+        private const int P = 1; //pion
+        private const int Tg = 21; //tour gauche (different pour le roque)
+        private const int Td = 22; //tour droite
+        private const int Cg = 31; //cavalier gauche (différents pour l'image)
+        private const int Cd = 32; //cavalier droit
+        private const int F = 4; //fou
+        private const int D = 5; //dame
+
+        private const int R = 6; //roi
+
         //poids d'importance des pieces sur le terrain
-        public int poidsPion = 100, poidsCavalier = 320, poidsFou = 330, poidsTour = 500, poidsReine = 900, poidsRoi = 20000;
+        public int PoidsPion = 100,
+            PoidsCavalier = 320,
+            PoidsFou = 330,
+            PoidsTour = 500,
+            PoidsReine = 900,
+            PoidsRoi = 20000;
 
-        const UInt64 k1 = 0x5555555555555555; /*  -1/3   */
-        const UInt64 k2 = 0x3333333333333333; /*  -1/5   */
-        const UInt64 k4 = 0x0f0f0f0f0f0f0f0f; /*  -1/17  */
-        const UInt64 kf = 0x0101010101010101; /*  -1/255 */
+        public Moves MovesCalculator = new Moves();
 
-        public int count (UInt64 x) {
-                x = x - ((x >> 1) & k1); /* put count of each 2 bits into those 2 bits */
-                x = (x & k2) + ((x >> 2) & k2); /* put count of each 4 bits into those 4 bits */
-                x = (x + (x >> 4)) & k4; /* put count of each 8 bits into those 8 bits */
-                x = (x * kf) >> 56; /* returns 8 most significant bits of x + (x<<8) + (x<<16) + (x<<24) + ...  */
-                return (int)x;
-            }
-
-        public Moves mov = new Moves();
-
-    //evaluation d'un environnement
-    public int evaluerbb(Environnement env)
-        {
-            Environnement.enumCouleurJoueur adv;
-            Environnement.enumCouleurJoueur joueur = env.getJoueur();
-            if (joueur == Environnement.enumCouleurJoueur.blanc){
-                adv = Environnement.enumCouleurJoueur.noir;
-            }
-            else
-            {
-                adv = Environnement.enumCouleurJoueur.blanc;
-            }
-            int score = poidsRoi * (count(env.getRoi(joueur) - env.getRoi(adv)))
-              + poidsReine * (count(env.getReine(joueur) - env.getReine(adv)))
-              + poidsTour * (count(env.getTour(joueur) - env.getTour(adv)))
-              + poidsCavalier * (count(env.getCavalier(joueur) - env.getCavalier(adv)))
-              + poidsFou * (count(env.getFou(joueur) - env.getFou(adv)))
-              + poidsPion * (count(env.getPion(joueur) - env.getPion(adv)));
-            //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
-            //score = score materiel + mobilité
-            return score;
-        }
-
-        public int evaluer(Environnement env, bool debutPartie)
+        public int Evaluer(Environment env, bool endingParty)
         {
             int score = 0;
-            int ind = -1;
             int scorePosition = 0;
-            if (env.getJoueur() == Environnement.enumCouleurJoueur.blanc) {
-               
-                foreach (int i in env.board)
-                {
-                    ind++;
-                    switch (i)
-                    {
-                        case 1:
-                            score += poidsPion;
-                            scorePosition += TablesEvalMouvement.pion[ind];
-                            break;
-                        case 21:
-                            score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour[ind];
-                            break;
-                        case 22:
-                            score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour[ind];
-                            break;
-                        case 31:
-                            score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier[ind];
-                            break;
-                        case 32:
-                            score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier[ind];
-                            break;
-                        case 4:
-                            score += poidsFou;
-                            scorePosition += TablesEvalMouvement.fou[ind];
-                            break;
-                        case 5:
-                            score += poidsReine;
-                            scorePosition += TablesEvalMouvement.reine[ind];
-                            break;
-                        case 6:
-                            score += poidsRoi;
-                            if (debutPartie)
-                            {
-                                scorePosition += TablesEvalMouvement.roiDebut[ind];
-                            }else
-                            {
-                                scorePosition += TablesEvalMouvement.roiFin[ind];
-                            }
-                            break;
-                        case -1:
-                            score -= poidsPion;
-                            break;
-                        case -21:
-                            score -= poidsTour;
-                            break;
-                        case -22:
-                            score -= poidsTour;
-                            break;
-                        case -31:
-                            score -= poidsCavalier;
-                            break;
-                        case -32:
-                            score -= poidsCavalier;
-                            break;
-                        case -4:
-                            score -= poidsFou;
-                            break;
-                        case -5:
-                            score -= poidsReine;
-                            break;
-                        case -6:
-                            score -= poidsRoi;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            else
+            for (int i = 0; i < env.Board.Length; i++)
             {
-                foreach (int i in env.board)
+                switch (env.CurrentPlayer * env.Board[i])
                 {
-                    ind++;
-                    switch (i)
-                    {
-                        case 1:
-                            score -= poidsPion;
-                            break;
-                        case 21:
-                            score -= poidsTour;
-                            break;
-                        case 22:
-                            score -= poidsTour;
-                            break;
-                        case 31:
-                            score -= poidsCavalier;
-                            break;
-                        case 32:
-                            score -= poidsCavalier;
-                            break;
-                        case 4:
-                            score -= poidsFou;
-                            break;
-                        case 5:
-                            score -= poidsReine;
-                            break;
-                        case 6:
-                            score -= poidsRoi;
-                            break;
-                        case -1:
-                            score += poidsPion;
-                            scorePosition += TablesEvalMouvement.pion_adv[ind];
-                            break;
-                        case -21:
-                            score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour_adv[ind];
-                            break;
-                        case -22:
-                            score += poidsTour;
-                            scorePosition += TablesEvalMouvement.tour_adv[ind];
-                            break;
-                        case -31:
-                            score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier_adv[ind];
-                            break;
-                        case -32:
-                            score += poidsCavalier;
-                            scorePosition += TablesEvalMouvement.cavalier_adv[ind];
-                            break;
-                        case -4:
-                            score += poidsFou;
-                            scorePosition += TablesEvalMouvement.fou_adv[ind];
-                            break;
-                        case -5:
-                            score += poidsReine;
-                            scorePosition += TablesEvalMouvement.fou_adv[ind];
-                            break;
-                        case -6:
-                            score += poidsRoi;
-                            if (debutPartie)
-                            {
-                                scorePosition += TablesEvalMouvement.roiDebut_adv[ind];
-                            }
-                            else
-                            {
-                                scorePosition += TablesEvalMouvement.roiFin_adv[ind];
-                            }
-                            break;
-                        default:
-                            break;
-                    }
+                    case P:
+                    case Pp:
+                        score += env.CurrentPlayer * PoidsPion;
+                        if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.Pion[i];
+                        if (env.CurrentPlayer == -1 && env.Board[i] <= 0) scorePosition += MoveEvalTables.PionAdv[i];
+                        break;
+                    case Tg:
+                    case Td:
+                        score += env.CurrentPlayer * PoidsTour;
+                        if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.Tour[i];
+                        if (env.CurrentPlayer == -1 && env.Board[i] <= 0) scorePosition += MoveEvalTables.TourAdv[i];
+                        break;
+                    case Cg:
+                    case Cd:
+                        score += env.CurrentPlayer * PoidsCavalier;
+                        if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.Cavalier[i];
+                        if (env.CurrentPlayer == -1 && env.Board[i] <= 0)
+                            scorePosition += MoveEvalTables.CavalierAdv[i];
+                        break;
+                    case F:
+                        score += env.CurrentPlayer * PoidsFou;
+                        if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.Fou[i];
+                        if (env.CurrentPlayer == -1 && env.Board[i] <= 0) scorePosition += MoveEvalTables.FouAdv[i];
+                        break;
+                    case D:
+                        score += env.CurrentPlayer * PoidsReine;
+                        if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.Reine[i];
+                        if (env.CurrentPlayer == -1 && env.Board[i] <= 0) scorePosition += MoveEvalTables.ReineAdv[i];
+                        break;
+                    case R:
+                        score += env.CurrentPlayer * PoidsRoi;
+                        if (endingParty)
+                        {
+                            if (env.CurrentPlayer == 1 && env.Board[i] >= 0) scorePosition += MoveEvalTables.RoiFin[i];
+                            if (env.CurrentPlayer == -1 && env.Board[i] <= 0)
+                                scorePosition += MoveEvalTables.RoiFinAdv[i];
+                        }
+                        else
+                        {
+                            if (env.CurrentPlayer == 1 && env.Board[i] >= 0)
+                                scorePosition += MoveEvalTables.RoiDebut[i];
+                            if (env.CurrentPlayer == -1 && env.Board[i] <= 0)
+                                scorePosition += MoveEvalTables.RoiDebutAdv[i];
+                        }
+                        break;
                 }
             }
             //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
@@ -210,98 +91,70 @@ namespace Moteur
             return score + scorePosition;
         }
 
-        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
+        public Environment AlphaBeta(Environment env, int alpha, int beta, int remainingDepth)
         {
-            Queue listeMouvements = new Queue();
-            if (profondeurRestante == 0) { return rechercheCalme(alpha, beta, env); }
-            else
+            Environment bestScore = new Environment(-999999);
+            if (alpha > beta)
             {
-                Environnement bestScore = new Environnement();
-                Environnement val = new Environnement();
-                bestScore.score = -99999999;
-                int joueurActuel;
-                if (env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                return env;
+            }
+            if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
+            Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
+            foreach (Environment mouvement in listEnvironments)
+            {
+                Environment val = AlphaBeta(mouvement, -beta, -alpha, remainingDepth - 1);
+                val.Score = env.Score * (-1);
+                if (val.Score > bestScore.Score)
                 {
-                    joueurActuel = 1;
-                }
-                else
-                {
-                    joueurActuel = -1;
-                }
-                listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
-                foreach (Environnement mouvement in listeMouvements)
-                {
-                    if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                    bestScore = val;
+                    if (bestScore.Score > alpha)
                     {
-                        mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
-                    }else
-                    {
-                        mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;
-                    }
-                    val = alphaBeta(mouvement, -beta, -alpha, profondeurRestante - 1);
-                    val.score = val.score * (-1);
-                    /*if (env.score >= beta)
-                        return env;*/
-                    if (val.score > bestScore.score)
-                    {
-                        bestScore = val;
-                        if (bestScore.score > alpha)
+                        alpha = bestScore.Score;
+                        if (alpha >= beta)
                         {
-                            alpha = bestScore.score;
-                            if (alpha >= beta)
-                            {
-                                return bestScore;
-                            }
+                            return bestScore;
                         }
                     }
                 }
-                return bestScore;
             }
+            return bestScore;
         }
-        public Environnement rechercheCalme(int alpha, int beta, Environnement env)
+
+        public Environment RechercheCalme(int alpha, int beta, Environment env)
         {
-            Environnement tmp = new Environnement();
-            int standPat = evaluer(env, true);
-            Queue mouvementsCapture = new Queue();
+            int standPat = Evaluer(env, false);
             if (standPat >= beta)
             {
-                env.score = beta;
+                env.Score = beta;
                 return env;
             }
             if (alpha < standPat)
             {
-                env.score = standPat;
+                env.Score = standPat;
                 alpha = standPat;
             }
-            mouvementsCapture = mov.prochainsEnvironnementsCapture(env);
-            if ( mouvementsCapture.Count == 0)
+            Queue mouvementsCapture = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, true); // true : only capture moves
+            if (mouvementsCapture.Count == 0)
             {
                 return env;
             }
-            foreach (Environnement captures in mouvementsCapture)
+            foreach (Environment captures in mouvementsCapture)
             {
-                if (captures.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                Environment tmp = RechercheCalme(-beta, -alpha, captures);
+                tmp.Score = tmp.Score * (-1);
+                if (tmp.Score >= beta)
                 {
-                    captures.joueurActuel = Environnement.enumCouleurJoueur.noir;
-                }
-                else
-                {
-                    captures.joueurActuel = Environnement.enumCouleurJoueur.blanc;
-                }
-                tmp = rechercheCalme(-beta, -alpha, captures);
-                tmp.score = tmp.score * (-1);
-                if (tmp.score >= beta) {
-                    tmp.score = beta;
+                    tmp.Score = beta;
                     return tmp;
                 }
-                if (tmp.score > alpha)
+                if (tmp.Score > alpha)
                 {
-                    alpha = tmp.score;
+                    alpha = tmp.Score;
                 }
-                tmp.score = alpha;
+                tmp.Score = alpha;
                 return tmp;
             }
             return env;
-            }
         }
+    }
     }
