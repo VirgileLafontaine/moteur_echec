@@ -32,6 +32,7 @@ namespace Moteur
 
         public int Evaluer(Environment env, bool endingParty)
         {
+            if (Math.Abs(env.Score) != 999999) return env.Score;
             int score = 0;
             int scorePosition = 0;
             for (int i = 0; i < env.Board.Length; i++)
@@ -111,8 +112,7 @@ namespace Moteur
             {
                 return env;
             }
-            if (remainingDepth == 0 && Math.Abs(env.Score) != 999999) return RechercheCalme(alpha, beta, env);
-            if (remainingDepth == 0) return env;
+            if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
             Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
             ArrayList listEnvironmentsRng = Randomize(listEnvironments);
             foreach (Environment mouvement in listEnvironmentsRng)
