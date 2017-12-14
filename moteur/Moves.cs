@@ -486,7 +486,7 @@ namespace Moteur
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
                 {
-                    if (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]) || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R)
+                    if (_toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]) || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R))
                     {
                         prochainsEnv.Enqueue(e);
                     }

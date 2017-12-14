@@ -18,9 +18,8 @@ namespace Moteur
         private const int Cd = 32; //cavalier droit
         private const int F = 4; //fou
         private const int D = 5; //dame
-
         private const int R = 6; //roi
-
+        private Random rng = new Random();
         //poids d'importance des pieces sur le terrain
         public int PoidsPion = 100,
             PoidsCavalier = 320,
@@ -90,9 +89,23 @@ namespace Moteur
             //score = score materiel + mobilité
             return score + scorePosition;
         }
-
+        public ArrayList randomize(Queue mvts)
+        {
+            ArrayList res = new ArrayList(mvts);
+            int n = mvts.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = res[k];
+                res[k] = res[n];
+                res[n] = value;
+            }
+            return res;
+        }
         public Environment AlphaBeta(Environment env, int alpha, int beta, int remainingDepth)
         {
+            int localAlpha = alpha;
             Environment bestScore = new Environment(-999999);
             if (alpha > beta)
             {
@@ -100,23 +113,33 @@ namespace Moteur
             }
             if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
             Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
-            foreach (Environment mouvement in listEnvironments)
+            ArrayList listEnvironmentsRng = randomize(listEnvironments);
+            foreach (Environment mouvement in listEnvironmentsRng)
             {
-                Environment val = AlphaBeta(mouvement, -beta, -alpha, remainingDepth - 1);
-                val.Score = env.Score * (-1);
-                if (val.Score > bestScore.Score)
+                Environment val = AlphaBeta(mouvement, -beta, -localAlpha, remainingDepth - 1);
+                val.Score = val.Score * (-1);
+
+                if (bestScore.Score < val.Score)
                 {
                     bestScore = val;
-                    if (bestScore.Score > alpha)
+                }
+                if (bestScore.Score >= beta)
+                    break;
+                if (bestScore.Score > localAlpha)
+                    localAlpha = bestScore.Score;
+            /*if (val.Score > bestScore.Score)
+            {
+                bestScore = val;
+                if (bestScore.Score > localAlpha)
+                {
+                    alpha = bestScore.Score;
+                    if (localAlpha >= beta)
                     {
-                        alpha = bestScore.Score;
-                        if (alpha >= beta)
-                        {
-                            return bestScore;
-                        }
+                        return bestScore;
                     }
                 }
-            }
+            }*/
+        }
             return bestScore;
         }
 
@@ -134,6 +157,7 @@ namespace Moteur
                 alpha = standPat;
             }
             Queue mouvementsCapture = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, true); // true : only capture moves
+
             if (mouvementsCapture.Count == 0)
             {
                 return env;
@@ -150,11 +174,11 @@ namespace Moteur
                 if (tmp.Score > alpha)
                 {
                     alpha = tmp.Score;
-                }
+                }/*
                 tmp.Score = alpha;
-                return tmp;
+                return tmp;*/
             }
             return env;
         }
     }
-    }
+}
