@@ -367,7 +367,7 @@ namespace Moteur
                 }
             }
             tmpBoard[monRoi] = signe * R;
-            
+            /*
             Console.WriteLine("attackBoard");
             for(int i =0; i < attackBoard.Length; i++)
             {
@@ -375,6 +375,7 @@ namespace Moteur
                 Console.Write(attackBoard[i]+" ");
             }
             Console.WriteLine("\n------------------");
+            */
 
             return attackBoard;
         }
