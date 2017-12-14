@@ -57,7 +57,7 @@ namespace Moteur
         {
             ArrayList res = new ArrayList();
             // Attaque colonne vers le haut
-            for (int j = pos; j > 0; j -= 8)
+            for (int j = pos; j >= 0 || j == pos; j -= 8)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -67,7 +67,7 @@ namespace Moteur
                 if ((signe * currentBoard[j] > 0 && j != pos) || signe * currentBoard[j] < 0) break;
             }
             // Attaque colonne vers le bas
-            for (int j = pos; j < 64; j += 8)
+            for (int j = pos; j < 64 || j == pos; j += 8)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -136,9 +136,10 @@ namespace Moteur
 
         private ArrayList mvt_fou(int[] currentBoard, int pos, int signe, bool attackOnly)
         {
+            Console.WriteLine("Fou"+pos);
             ArrayList res = new ArrayList();
             // Diagonale haut gauche
-            for (int j = pos; j > 0 && (j+1) % 8 != 0; j -= 9)
+            for (int j = pos; (j >= 0 && (j+1) % 8 != 0) || j == pos; j -= 9)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -148,7 +149,7 @@ namespace Moteur
                 if ((signe * currentBoard[j] > 0 && j != pos) || signe * currentBoard[j] < 0) break;
             }
             // Diagonale haut droite
-            for (int j = pos; j > 0 && j % 8 != 0; j -= 7)
+            for (int j = pos; j >= 0 && j % 8 != 0 || j == pos; j -= 7)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -158,7 +159,7 @@ namespace Moteur
                 if ((signe * currentBoard[j] > 0 && j != pos) || signe * currentBoard[j] < 0) break;
             }
             // Diagonale bas gauche
-            for (int j = pos; j < 64 && (j+1) % 8 != 0; j += 7)
+            for (int j = pos; j < 64 && (j+1) % 8 != 0 || j == pos; j += 7)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -168,7 +169,7 @@ namespace Moteur
                 if ((signe * currentBoard[j] > 0 && j != pos) || signe * currentBoard[j] < 0) break;
             }
             // Diagonale bas droite
-            for (int j = pos; j < 64 && j % 8 != 0; j += 9)
+            for (int j = pos; j < 64 && j % 8 != 0 || j == pos; j += 9)
             {
                 // Case vide
                 if (!attackOnly && signe * currentBoard[j] == 0) res.Add(j);
@@ -221,9 +222,10 @@ namespace Moteur
         }
 
         // Pb : est-ce que je marque comme attaquable une case avec quelqu'un dessus ?
-        private void fill_attack_board(int[] currentBoard, int signe)
+        private int[] fill_attack_board(int[] currentBoard, int signe)
         {
             int monRoi = Array.IndexOf(currentBoard, signe * R);
+            int[] attackBoard = new int[64];
             currentBoard[monRoi] = 0;
             for (int i = 0; i < currentBoard.Length; i++)
             {
@@ -231,15 +233,16 @@ namespace Moteur
                 switch (signe * currentBoard[i])
                 {
                     case -P:
+                    case -Pp:
                         // Attaque en diagonale
                         if (i + 9 < 64 && currentBoard[i + 9] == 0)
                         {
-                            _attackBoard[i + 9] += 1;
+                            attackBoard[i + 9] += 1;
                             if (monRoi == i + 9) _toAttack.Add(i);
                         }
                         if (i + 7 < 64 && currentBoard[i + 7] == 0)
                         {
-                            _attackBoard[i + 7] += 1;
+                            attackBoard[i + 7] += 1;
                             if (monRoi == i + 7) _toAttack.Add(i);
                         }
                         
@@ -248,41 +251,41 @@ namespace Moteur
                     case -Td:
                         foreach (int pos in mvt_tour(currentBoard, i, -signe, false))
                         {
-                            _attackBoard[pos] += 1;
+                            attackBoard[pos] += 1;
                             if (monRoi == pos)
                             {
                                 _toAttack.Add(i);
                             }
                         }
-                        _attackBoard[i] = 0;
+                        attackBoard[i] = 0;
                         break;
                     case -Cd:
                     case -Cg:
                         foreach (int pos in mvt_cavalier(currentBoard, i, -signe, false))
                         {
-                            _attackBoard[pos] += 1;
+                            attackBoard[pos] += 1;
                             if (monRoi == pos)
                             {
                                 _toAttack.Add(i);
                             }
                         }
-                        _attackBoard[i] = 0;
+                        attackBoard[i] = 0;
                         break;
                     case -F:
                         foreach (int pos in mvt_fou(currentBoard, i, -signe, false))
                         {
-                            _attackBoard[pos] += 1;
+                            attackBoard[pos] += 1;
                             if (monRoi == pos)
                             {
                                 _toAttack.Add(i);
                             }
                         }
-                        _attackBoard[i] = 0;
+                        attackBoard[i] = 0;
                         break;
                     case -D:
                         foreach (int pos in mvt_tour(currentBoard, i, -signe, false))
                         {
-                            _attackBoard[pos] += 1;
+                            attackBoard[pos] += 1;
                             if (monRoi == pos)
                             {
                                 _toAttack.Add(i);
@@ -290,14 +293,14 @@ namespace Moteur
                         }
                         foreach (int pos in mvt_fou(currentBoard, i, -signe, false))
                         {
-                            _attackBoard[pos] += 1;
+                            attackBoard[pos] += 1;
                         }
-                        _attackBoard[i] = 0;
+                        attackBoard[i] = 0;
                         break;
                     case -R:
                         if (i - 9 > 0 && i % 8 != 0 && currentBoard[i - 9] == 0)
                         {
-                            _attackBoard[i - 9] += 1;
+                            attackBoard[i - 9] += 1;
                             if (monRoi == i - 9)
                             {
                                 _toAttack.Add(i);
@@ -305,7 +308,7 @@ namespace Moteur
                         }
                         if (i - 8 > 0 && currentBoard[i - 8] == 0)
                         {
-                            _attackBoard[i - 8] += 1;
+                            attackBoard[i - 8] += 1;
                             if (monRoi == i - 8)
                             {
                                 _toAttack.Add(i);
@@ -313,7 +316,7 @@ namespace Moteur
                         }
                         if (i - 7 > 0 && (i + 1) % 8 != 0 && currentBoard[i - 7] == 0)
                         {
-                            _attackBoard[i - 7] += 1;
+                            attackBoard[i - 7] += 1;
                             if (monRoi == i - 7)
                             {
                                 _toAttack.Add(i);
@@ -321,7 +324,7 @@ namespace Moteur
                         }
                         if (i - 1 > 0 && i % 8 != 0 && currentBoard[i - 1] == 0)
                         {
-                            _attackBoard[i - 1] += 1;
+                            attackBoard[i - 1] += 1;
                             if (monRoi == i - 1)
                             {
                                 _toAttack.Add(i);
@@ -329,7 +332,7 @@ namespace Moteur
                         }
                         if (i + 1 < 64 && (i + 1) != 0 && currentBoard[i + 1] == 0)
                         {
-                            _attackBoard[i + 1] += 1;
+                            attackBoard[i + 1] += 1;
                             if (monRoi == i + 1)
                             {
                                 _toAttack.Add(i);
@@ -337,7 +340,7 @@ namespace Moteur
                         }
                         if (i + 7 < 64 && i % 8 != 0 && currentBoard[i + 7] == 0)
                         {
-                            _attackBoard[i + 7] += 1;
+                            attackBoard[i + 7] += 1;
                             if (monRoi == i + 7)
                             {
                                 _toAttack.Add(i);
@@ -345,7 +348,7 @@ namespace Moteur
                         }
                         if (i + 8 < 64 && currentBoard[i + 8] == 0)
                         {
-                            _attackBoard[i + 8] += 1;
+                            attackBoard[i + 8] += 1;
                             if (monRoi == i + 8)
                             {
                                 _toAttack.Add(i);
@@ -353,7 +356,7 @@ namespace Moteur
                         }
                         if (i + 9 < 64 && (i + 1) % 8 != 0 && currentBoard[i + 9] == 0)
                         {
-                            _attackBoard[i + 9] += 1;
+                            attackBoard[i + 9] += 1;
                             if (monRoi == i + 9)
                             {
                                 _toAttack.Add(i);
@@ -363,6 +366,16 @@ namespace Moteur
                 }
             }
             currentBoard[monRoi] = signe * R;
+            
+            Console.WriteLine("attackBoard");
+            for(int i =0; i < attackBoard.Length; i++)
+            {
+                if (i%8 == 0) Console.WriteLine("");
+                Console.Write(attackBoard[i]+" ");
+            }
+            Console.WriteLine("\n------------------");
+
+            return attackBoard;
         }
 
         private Queue fill_queue(ArrayList indexTab, int piece, int[] currentBoard, int curPos, Environment curEnv)
@@ -374,9 +387,23 @@ namespace Moteur
                 int[] auxBoard = (int[]) currentBoard.Clone();
                 auxBoard[curPos] = 0;
                 auxBoard[nextPos] = piece;
-                // Creating environment
-                Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new string[] {_tabCoord[curPos], _tabCoord[nextPos], ""});
-                auxQueue.Enqueue(env);
+                int[] tmpAttackBoard = fill_attack_board(auxBoard, curEnv.CurrentPlayer);
+                int monRoi = Array.IndexOf(currentBoard, curEnv.CurrentPlayer * R);
+                
+                Console.WriteLine("tmpAttackBoard");
+                for(int i =0; i < tmpAttackBoard.Length; i++)
+                {
+                    if (i%8 == 0) Console.WriteLine("");
+                    Console.Write(tmpAttackBoard[i]+" ");
+                }
+                Console.WriteLine("\n------------------");
+                
+                if (tmpAttackBoard[monRoi] == 0)
+                {
+                    // Creating environment
+                    Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new[] {_tabCoord[curPos], _tabCoord[nextPos], ""});
+                    auxQueue.Enqueue(env);   
+                }
             }
             return auxQueue;
         }
@@ -386,8 +413,7 @@ namespace Moteur
         {
             int[] currentBoard = curEnv.Board;
             Queue prochainsEnv = new Queue();
-            
-            fill_attack_board(currentBoard, signe);
+            _attackBoard = fill_attack_board(currentBoard, signe);
             int monRoi = Array.IndexOf(currentBoard, signe * R);
             
             // Détection d'un échec double ou plus
@@ -486,7 +512,7 @@ namespace Moteur
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
                 {
-                    if (_toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]) || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R))
+                    if ( _toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]) || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R))
                     {
                         prochainsEnv.Enqueue(e);
                     }
