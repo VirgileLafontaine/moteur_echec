@@ -65,9 +65,8 @@ namespace Moteur
                                 /***************************************** ECRIRE LE CODE DE L'IA *************************************/
                                 /******************************************************************************************************/
                                 Exploration expl = new Exploration();
-                                Environnement env = new Environnement();
-                                Environnement bestScore = new Environnement();
-                                Environnement.enumCouleurJoueur joueur = Environnement.enumCouleurJoueur.blanc;
+                                Environment env = new Environment();
+                                env.CurrentPlayer = Environment.White;
                                 var stopwatch = Stopwatch.StartNew();
                                 List<String> mesPieces = new List<String>();
                                 for (int i = 0; i < tabVal.Length; i++)
@@ -80,14 +79,14 @@ namespace Moteur
                                 {
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
-                                env.board = tabVal;
-                                env.joueurActuel = joueur;
-                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur);
-                                Environnement tmp = choix;
-                                while (tmp.historiqueMouvement.Count() != 0 && tmp.historiqueMouvement[0].mvt!=null) { 
-                                        tmp = tmp.historiqueMouvement[0];
+                                env.Board = tabVal;
+                                Environment choix = expl.AlphaBeta(env,-999999999,999999999,profondeur);
+                                Environment tmp = choix;
+                                while (tmp.PreviousEnvironment.Mvt !=null)
+                                {
+                                    tmp = tmp.PreviousEnvironment;
                                 }
-                                coord = tmp.mvt;
+                                coord = tmp.Mvt;
 
                                 /********************************************************************************************************/
                                 /********************************************************************************************************/

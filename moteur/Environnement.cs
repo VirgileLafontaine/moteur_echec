@@ -28,6 +28,11 @@ namespace Moteur
         {
             Score = score;
         }
+
+        public Environment()
+        {
+            
+        }
     }
 }
 
