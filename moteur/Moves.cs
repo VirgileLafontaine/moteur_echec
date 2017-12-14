@@ -415,6 +415,8 @@ namespace Moteur
         // Fonction principale
         public Queue ProchainsEnvironnements(Environment curEnv, int signe, bool attackOnly)
         {
+            int[] currentBoard = curEnv.Board;
+            Queue prochainsEnv = new Queue();
             int monRoi = Array.IndexOf(currentBoard, signe * R);
             if (monRoi == -1)
             {
@@ -424,9 +426,6 @@ namespace Moteur
                 prochainsEnv.Enqueue(echecEnv);
                 return prochainsEnv;
             }
-            
-            int[] currentBoard = curEnv.Board;
-            Queue prochainsEnv = new Queue();
             _attackBoard = fill_attack_board(currentBoard, signe);
             
             // Détection d'un échec double ou plus
