@@ -419,6 +419,15 @@ namespace Moteur
             Queue prochainsEnv = new Queue();
             _attackBoard = fill_attack_board(currentBoard, signe);
             int monRoi = Array.IndexOf(currentBoard, signe * R);
+
+            if (monRoi == -1)
+            {
+                Environment echecEnv = new Environment();
+                echecEnv.Score = -999999;
+                echecEnv.Mvt = null;
+                prochainsEnv.Enqueue(echecEnv);
+                return prochainsEnv;
+            }
             
             // Détection d'un échec double ou plus
             if (_attackBoard[monRoi] >= 2)
