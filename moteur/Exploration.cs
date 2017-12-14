@@ -89,7 +89,7 @@ namespace Moteur
             //score = score materiel + mobilité
             return score + scorePosition;
         }
-        public ArrayList randomize(Queue mvts)
+        public ArrayList Randomize(Queue mvts)
         {
             ArrayList res = new ArrayList(mvts);
             int n = mvts.Count;
@@ -111,9 +111,10 @@ namespace Moteur
             {
                 return env;
             }
-            if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
+            if (remainingDepth == 0 && env.Score != -999999) return RechercheCalme(alpha, beta, env);
+            if (remainingDepth == 0) return env;
             Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
-            ArrayList listEnvironmentsRng = randomize(listEnvironments);
+            ArrayList listEnvironmentsRng = Randomize(listEnvironments);
             foreach (Environment mouvement in listEnvironmentsRng)
             {
                 Environment val = AlphaBeta(mouvement, -beta, -localAlpha, remainingDepth - 1);
