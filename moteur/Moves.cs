@@ -421,7 +421,7 @@ namespace Moteur
             if (monRoi == -1)
             {
                 Environment echecEnv = new Environment();
-                echecEnv.Score = -999999;
+                echecEnv.Score = signe*-999999;
                 echecEnv.Mvt = null;
                 prochainsEnv.Enqueue(echecEnv);
                 return prochainsEnv;

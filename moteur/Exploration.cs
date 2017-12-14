@@ -111,7 +111,7 @@ namespace Moteur
             {
                 return env;
             }
-            if (remainingDepth == 0 && env.Score != -999999) return RechercheCalme(alpha, beta, env);
+            if (remainingDepth == 0 && Math.Abs(env.Score) != 999999) return RechercheCalme(alpha, beta, env);
             if (remainingDepth == 0) return env;
             Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
             ArrayList listEnvironmentsRng = Randomize(listEnvironments);
