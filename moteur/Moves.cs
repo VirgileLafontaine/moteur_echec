@@ -246,7 +246,7 @@ namespace Moteur
                         break;
                     case -Tg:
                     case -Td:
-                        foreach (int pos in mvt_tour(currentBoard, i, -signe))
+                        foreach (int pos in mvt_tour(currentBoard, i, -signe, false))
                         {
                             _attackBoard[pos] += 1;
                             if (monRoi == pos)
@@ -258,7 +258,7 @@ namespace Moteur
                         break;
                     case -Cd:
                     case -Cg:
-                        foreach (int pos in mvt_cavalier(currentBoard, i, -signe))
+                        foreach (int pos in mvt_cavalier(currentBoard, i, -signe, false))
                         {
                             _attackBoard[pos] += 1;
                             if (monRoi == pos)
@@ -269,7 +269,7 @@ namespace Moteur
                         _attackBoard[i] = 0;
                         break;
                     case -F:
-                        foreach (int pos in mvt_fou(currentBoard, i, -signe))
+                        foreach (int pos in mvt_fou(currentBoard, i, -signe, false))
                         {
                             _attackBoard[pos] += 1;
                             if (monRoi == pos)
@@ -280,7 +280,7 @@ namespace Moteur
                         _attackBoard[i] = 0;
                         break;
                     case -D:
-                        foreach (int pos in mvt_tour(currentBoard, i, -signe))
+                        foreach (int pos in mvt_tour(currentBoard, i, -signe, false))
                         {
                             _attackBoard[pos] += 1;
                             if (monRoi == pos)
@@ -288,7 +288,7 @@ namespace Moteur
                                 _toAttack.Add(i);
                             }
                         }
-                        foreach (int pos in mvt_fou(currentBoard, i, -signe))
+                        foreach (int pos in mvt_fou(currentBoard, i, -signe, false))
                         {
                             _attackBoard[pos] += 1;
                         }
