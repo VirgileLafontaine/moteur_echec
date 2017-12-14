@@ -136,7 +136,7 @@ namespace Moteur
 
         private ArrayList mvt_fou(int[] currentBoard, int pos, int signe, bool attackOnly)
         {
-            Console.WriteLine("Fou"+pos);
+            //Console.WriteLine("Fou"+pos);
             ArrayList res = new ArrayList();
             // Diagonale haut gauche
             for (int j = pos; (j >= 0 && (j+1) % 8 != 0) || j == pos; j -= 9)
