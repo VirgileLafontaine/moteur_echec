@@ -29,23 +29,18 @@ namespace Moteur
                                                    "a2","b2","c2","d2","e2","f2","g2","h2",
                                                    "a1","b1","c1","d1","e1","f1","g1","h1" };
 
-                Exploration expl = new Exploration();
-                Environnement env = new Environnement();
-                Environnement bestScore = new Environnement();
+                
                 int profondeur = 3;
                 while (!stop)
                 {
                     using (var mmf = MemoryMappedFile.OpenExisting("plateau"))
                     {
-                    
                         using(var mmf2 = MemoryMappedFile.OpenExisting("repAI1"))
                         {
                             Mutex mutexStartAI1 = Mutex.OpenExisting("mutexStartAI1");
                             Mutex mutexAI1 = Mutex.OpenExisting("mutexAI1");
                             mutexAI1.WaitOne();
-                            
                             mutexStartAI1.WaitOne();
-
                             using (var accessor = mmf.CreateViewAccessor())
                             {
                                 ushort Size = accessor.ReadUInt16(0);
@@ -69,6 +64,10 @@ namespace Moteur
                                 /******************************************************************************************************/
                                 /***************************************** ECRIRE LE CODE DE L'IA *************************************/
                                 /******************************************************************************************************/
+                                Exploration expl = new Exploration();
+                                Environnement env = new Environnement();
+                                Environnement bestScore = new Environnement();
+                                Environnement.enumCouleurJoueur joueur = Environnement.enumCouleurJoueur.blanc;
                                 var stopwatch = Stopwatch.StartNew();
                                 List<String> mesPieces = new List<String>();
                                 for (int i = 0; i < tabVal.Length; i++)
@@ -82,8 +81,8 @@ namespace Moteur
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
                                 env.board = tabVal;
-                                bestScore.score = -999999;
-                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur, bestScore);
+                                env.joueurActuel = joueur;
+                                Environnement choix = expl.alphaBeta(env,-999999999,999999999,profondeur);
                                 Environnement tmp = choix;
                                 while (tmp.historiqueMouvement.Count() != 0 && tmp.historiqueMouvement[0].mvt!=null) { 
                                         tmp = tmp.historiqueMouvement[0];

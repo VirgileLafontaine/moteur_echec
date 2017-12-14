@@ -461,6 +461,7 @@ namespace Moteur
                 env.mvt = new string[] {tabCoord[cur_pos], tabCoord[next_pos], ""};
                 env.historiqueMouvement =new List<Environnement>();
                 env.historiqueMouvement.Add(cur_env);
+                env.joueurActuel = cur_env.joueurActuel;
                
                 auxQueue.Enqueue(env);
             }
@@ -471,13 +472,13 @@ namespace Moteur
         public Queue prochainsEnvironnements(Environnement cur_env, int signe)
         {
             int[] current_board = cur_env.board;
-            if (cur_env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+            /*if (cur_env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
             {
                 cur_env.joueurActuel = Environnement.enumCouleurJoueur.noir;
             }else
             {
                 cur_env.joueurActuel = Environnement.enumCouleurJoueur.blanc;
-            }
+            }*/
             Queue prochainsEnv = new Queue();
             
             fill_attack_board(current_board, signe);
@@ -492,7 +493,7 @@ namespace Moteur
             
             for (int i = 0; i < current_board.Length; i++)
             {
-                // Pièces adverses
+                // mes Pièces
                 switch (signe * current_board[i])
                 {
                     case P:
@@ -579,7 +580,7 @@ namespace Moteur
                 prochainsEnv.Clear();
                 foreach (Environnement e in aux)
                 {
-                    if (e.mvt[1].Equals(tabCoord[(int) toAttack[0]]) || current_board[Array.IndexOf(tabCoord, e.mvt[0])] == signe*R)
+                    if (toAttack.Count!=0 && (e.mvt[1].Equals(tabCoord[(int) toAttack[0]]) || current_board[Array.IndexOf(tabCoord, e.mvt[0])] == signe*R))
                     {
                         prochainsEnv.Enqueue(e);
                     }

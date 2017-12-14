@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -209,48 +210,57 @@ namespace Moteur
             return score + scorePosition;
         }
 
-        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante, Environnement bestScore)
+        public Environnement alphaBeta(Environnement env, int alpha, int beta, int profondeurRestante)
         {
-            int a = alpha;
-            int b = beta;
             Queue listeMouvements = new Queue();
-            if (a > b) {return env;}
-            if (profondeurRestante == 0) return rechercheCalme(a, b, env);
-            int joueurActuel;
-            if ((int)env.getJoueur() == 0)
-            {
-                joueurActuel = 1;
-            }
+            if (profondeurRestante == 0) { return rechercheCalme(alpha, beta, env); }
             else
             {
-                joueurActuel = -1;
+                Environnement bestScore = new Environnement();
+                Environnement val = new Environnement();
+                bestScore.score = -99999999;
+                int joueurActuel;
+                if (env.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                {
+                    joueurActuel = 1;
+                }
+                else
+                {
+                    joueurActuel = -1;
+                }
+                listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
+                foreach (Environnement mouvement in listeMouvements)
+                {
+                    if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                    {
+                        mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
+                    }else
+                    {
+                        mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;
+                    }
+                    val = alphaBeta(mouvement, -beta, -alpha, profondeurRestante - 1);
+                    val.score = val.score * (-1);
+                    /*if (env.score >= beta)
+                        return env;*/
+                    if (val.score > bestScore.score)
+                    {
+                        bestScore = val;
+                        if (bestScore.score > alpha)
+                        {
+                            alpha = bestScore.score;
+                            if (alpha >= beta)
+                            {
+                                return bestScore;
+                            }
+                        }
+                    }
+                }
+                return bestScore;
             }
-            listeMouvements = mov.prochainsEnvironnements(env, joueurActuel);
-            foreach (Environnement mouvement in listeMouvements)
-            {/*
-                if (mouvement.getJoueur() == Environnement.enumCouleurJoueur.blanc)
-                {
-                    mouvement.joueurActuel = Environnement.enumCouleurJoueur.noir;
-                }
-                else mouvement.joueurActuel = Environnement.enumCouleurJoueur.blanc;*/
-                env = alphaBeta(mouvement, -b, -a, profondeurRestante - 1, bestScore);
-                if (env.joueurActuel == Environnement.enumCouleurJoueur.noir)
-                {
-                    env.score = env.score * (-1);
-                }
-                if (env.score >= beta)
-                    return env;
-                if (env.score > bestScore.score)
-                {
-                    bestScore = env;
-                    if (env.score > alpha)
-                        alpha = env.score;
-                }
-            }
-            return bestScore;
         }
         public Environnement rechercheCalme(int alpha, int beta, Environnement env)
         {
+            Environnement tmp = new Environnement();
             int standPat = evaluer(env, true);
             Queue mouvementsCapture = new Queue();
             if (standPat >= beta)
@@ -261,20 +271,36 @@ namespace Moteur
             if (alpha < standPat)
             {
                 env.score = standPat;
-                //alpha = standPat;
+                alpha = standPat;
             }
-            //mouvementsCapture = mov.prochainsEnvironnementsCapture(env);
-               /*
-            until(every_capture_has_been_examined)  {
-                MakeCapture();
-                score = -rechercheCalme(-beta, -alpha, env);
-                TakeBackMove();
-                
-                if (score >= beta)
-                    return beta;
-                if (score > alpha)
-                    alpha = score;
-            }*/
+            mouvementsCapture = mov.prochainsEnvironnementsCapture(env);
+            if ( mouvementsCapture.Count == 0)
+            {
+                return env;
+            }
+            foreach (Environnement captures in mouvementsCapture)
+            {
+                if (captures.getJoueur() == Environnement.enumCouleurJoueur.blanc)
+                {
+                    captures.joueurActuel = Environnement.enumCouleurJoueur.noir;
+                }
+                else
+                {
+                    captures.joueurActuel = Environnement.enumCouleurJoueur.blanc;
+                }
+                tmp = rechercheCalme(-beta, -alpha, captures);
+                tmp.score = tmp.score * (-1);
+                if (tmp.score >= beta) {
+                    tmp.score = beta;
+                    return tmp;
+                }
+                if (tmp.score > alpha)
+                {
+                    alpha = tmp.score;
+                }
+                tmp.score = alpha;
+                return tmp;
+            }
             return env;
             }
         }
