@@ -442,13 +442,19 @@ namespace Moteur
                 if (tmpAttackBoard[monRoi] == 0 || Math.Abs(piece) == R)
                 {
                     // Creating environment
-                    Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new[] {_tabCoord[curPos], _tabCoord[nextPos], ""});
+                    Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new[] {_tabCoord[curPos], _tabCoord[nextPos], promotion(piece,nextPos)});
                     env.Ordre = bonusOrdre;
                     auxQueue.Enqueue(env);   
                 }
             }
             
             return auxQueue;
+        }
+
+        private string promotion(int piece, int nextPos)
+        {
+            if (piece == P && nextPos < 8 || piece == -P && nextPos >= 56) return "D";
+            return "";
         }
 
         private bool stopAttack(Environment e, int signe)

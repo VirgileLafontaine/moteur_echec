@@ -10,7 +10,7 @@ namespace Moteur
 {
     public class Exploration
     {
-        public static Hashtable hashtbl = new Hashtable();
+        //public static Hashtable hashtbl = new Hashtable();
         private const int Pp = 10; //pion passant
         private const int P = 1; //pion
         private const int Tg = 21; //tour gauche (different pour le roque)
@@ -107,6 +107,7 @@ namespace Moteur
         }
         public Environment AlphaBeta(Environment env, int alpha, int beta, int remainingDepth)
         {
+            /*
             if (hashtbl.Contains(env.Board))
             {
                 Queue q = new Queue();
@@ -121,7 +122,7 @@ namespace Moteur
                     beta = b;
                     return env;
                 }
-            }
+            } */
             int localAlpha = alpha;
             Environment bestScore = new Environment(-9999999);
             if (alpha > beta)
@@ -169,7 +170,7 @@ namespace Moteur
             l.Enqueue(alpha);
             l.Enqueue(beta);
             l.Enqueue(remainingDepth);
-            if (hashtbl.Contains(bestScore.Board))
+            /*if (hashtbl.Contains(bestScore.Board))
             {
                 /*Queue q2 = new Queue();
                 q2 = (Queue)hashtbl[bestScore.Board];
@@ -178,7 +179,7 @@ namespace Moteur
                 int b = (int)q2.Dequeue();
                 int depth = (int)q2.Dequeue();
                 if (depth > remainingDepth)
-                {*/
+                {
                     hashtbl.Remove(bestScore.Board);
                     hashtbl.Add(bestScore.Board, new Queue(l));
                     return bestScore;
@@ -187,7 +188,8 @@ namespace Moteur
             {
                 hashtbl.Add(bestScore.Board, new Queue(l));
                 return bestScore;
-            }
+            }*/
+            return bestScore;
         }
 
         public Environment RechercheCalme(int alpha, int beta, Environment env)
