@@ -137,7 +137,7 @@ namespace Moteur
             {
                 ListEnvironments.Add(e);
             }
-            List<Environment> ListEnvironmentsOrdered = ListEnvironments.OrderBy(o => o.Ordre).ToList();
+            List<Environment> ListEnvironmentsOrdered = ListEnvironments.OrderBy(o => o.Score).ToList();
             foreach (Environment mouvement in ListEnvironmentsOrdered)
             {
                 Environment val = AlphaBeta(mouvement, -beta, -localAlpha, remainingDepth - 1);
