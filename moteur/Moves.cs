@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Moteur
 {
     public class Moves
     {
         private int[] _attackBoard = new int[64];
-        private ArrayList _toAttack = new ArrayList(); 
+        private ArrayList _toAttack = new ArrayList();
+
+        public int Mobility = 0;
 
         //Coordonnées des cases
         private readonly string[] _tabCoord = new string[] {
@@ -385,6 +386,10 @@ namespace Moteur
             Queue auxQueue = new Queue();
             foreach (int nextPos in indexTab)
             {
+                if (_attackBoard[nextPos] == 0)
+                {
+                    Mobility++;
+                }
                 // Next board
                 int[] auxBoard = (int[]) currentBoard.Clone();
                 int bonusOrdre = 0;
@@ -461,6 +466,7 @@ namespace Moteur
         // Fonction principale
         public Queue ProchainsEnvironnements(Environment curEnv, int signe, bool attackOnly)
         {
+            Mobility = 0;
             int[] currentBoard = curEnv.Board;
             Queue prochainsEnv = new Queue();
             int monRoi = Array.IndexOf(currentBoard, signe * R);
@@ -568,6 +574,7 @@ namespace Moteur
             // Détection d'un échec simple
             if (_attackBoard[monRoi] == 1)
             {
+                Mobility = 0;
                 Queue aux = new Queue(prochainsEnv);
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
@@ -578,6 +585,7 @@ namespace Moteur
                          || stopAttack(e, signe))
                     {
                         prochainsEnv.Enqueue(e);
+                        Mobility++;
                     }
                 }
             }
