@@ -89,7 +89,8 @@ namespace Moteur
             }
             //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
             //score = score materiel + mobilité
-            return score + scorePosition;
+            MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false);
+            return score + scorePosition + MovesCalculator.Mobility;
         }
         public ArrayList Randomize(Queue mvts)
         {
