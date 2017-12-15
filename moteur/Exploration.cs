@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Moteur
 {
     public class Exploration
     {
-        //public static Hashtable hashtbl = new Hashtable();
+        public static Hashtable hashtbl = new Hashtable();
         private const int Pp = 10; //pion passant
         private const int P = 1; //pion
         private const int Tg = 21; //tour gauche (different pour le roque)
@@ -87,10 +85,11 @@ namespace Moteur
                         break;
                 }
             }
-            //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
-            //score = score materiel + mobilité
+            
+            Console.WriteLine("Mobility :" +env.Mobility);
             return score + scorePosition + env.Mobility;
         }
+        
         public ArrayList Randomize(Queue mvts)
         {
             ArrayList res = new ArrayList(mvts);
@@ -105,9 +104,9 @@ namespace Moteur
             }
             return res;
         }
+        
         public Environment AlphaBeta(Environment env, int alpha, int beta, int remainingDepth)
         {
-            /*
             if (hashtbl.Contains(env.Board))
             {
                 Queue q = new Queue();
@@ -118,11 +117,12 @@ namespace Moteur
                 if (rdepth < remainingDepth)
                 {
                     env.Score = Bscore.Score;
+                    Console.WriteLine("Hashtableutile");
                     alpha = a;
                     beta = b;
                     return env;
                 }
-            } */
+            }
             int localAlpha = alpha;
             Environment bestScore = new Environment(-9999999);
             if (alpha > beta)
@@ -152,34 +152,14 @@ namespace Moteur
                     break;
                 if (bestScore.Score > localAlpha)
                     localAlpha = bestScore.Score;
-            /*if (val.Score > bestScore.Score)
-            {
-                bestScore = val;
-                if (bestScore.Score > localAlpha)
-                {
-                    alpha = bestScore.Score;
-                    if (localAlpha >= beta)
-                    {
-                        return bestScore;
-                    }
-                }
-            }*/
         }
             Queue l = new Queue();
             l.Enqueue(bestScore);
             l.Enqueue(alpha);
             l.Enqueue(beta);
             l.Enqueue(remainingDepth);
-            /*if (hashtbl.Contains(bestScore.Board))
+            if (hashtbl.Contains(bestScore.Board))
             {
-                /*Queue q2 = new Queue();
-                q2 = (Queue)hashtbl[bestScore.Board];
-                Environment Bscore = (Environment)q2.Dequeue();
-                int a = (int)q2.Dequeue();
-                int b = (int)q2.Dequeue();
-                int depth = (int)q2.Dequeue();
-                if (depth > remainingDepth)
-                {
                     hashtbl.Remove(bestScore.Board);
                     hashtbl.Add(bestScore.Board, new Queue(l));
                     return bestScore;
@@ -188,7 +168,7 @@ namespace Moteur
             {
                 hashtbl.Add(bestScore.Board, new Queue(l));
                 return bestScore;
-            }*/
+            }
             return bestScore;
         }
 
@@ -206,7 +186,6 @@ namespace Moteur
                 alpha = standPat;
             }
             Queue mouvementsCapture = MovesCalculator.ProchainsEnvironnements(ref env, env.CurrentPlayer, true); // true : only capture moves
-
             if (mouvementsCapture.Count == 0)
             {
                 return env;

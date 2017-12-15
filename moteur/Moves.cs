@@ -428,17 +428,6 @@ namespace Moteur
                 int[] tmpAttackBoard = fill_attack_board(auxBoard, curEnv.CurrentPlayer);
                 int monRoi = Array.IndexOf(currentBoard, curEnv.CurrentPlayer * R);
                 
-                 
-                /*
-                Console.WriteLine("tmpAttackBoard for "+nextPos);
-                for(int i =0; i < tmpAttackBoard.Length; i++)
-                {
-                    if (i%8 == 0) Console.WriteLine("");
-                    Console.Write(tmpAttackBoard[i]+" ");
-                }
-                Console.WriteLine("\n------------------");
-                */
-                
                 if (tmpAttackBoard[monRoi] == 0 || Math.Abs(piece) == R)
                 {
                     // Creating environment
@@ -472,6 +461,7 @@ namespace Moteur
         // Fonction principale
         public Queue ProchainsEnvironnements(ref Environment curEnv, int signe, bool attackOnly)
         {
+            if (curEnv.Board == null) return new Queue();
             _mobility = 0;
             int[] currentBoard = curEnv.Board;
             Queue prochainsEnv = new Queue();
