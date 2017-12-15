@@ -15,6 +15,7 @@ namespace Moteur
         public int[] Board;
         public string[] Mvt;
         public int Score;
+        public int Mobility;
         public int Ordre;
         public Environment(int joueurActuel, int[] board, Environment previous,string[] mvt)
         {

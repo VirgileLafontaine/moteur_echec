@@ -8,7 +8,7 @@ namespace Moteur
         private int[] _attackBoard = new int[64];
         private ArrayList _toAttack = new ArrayList();
 
-        public int Mobility = 0;
+        private int _mobility = 0;
 
         //Coordonnées des cases
         private readonly string[] _tabCoord = new string[] {
@@ -388,7 +388,7 @@ namespace Moteur
             {
                 if (_attackBoard[nextPos] == 0)
                 {
-                    Mobility++;
+                    _mobility++;
                 }
                 // Next board
                 int[] auxBoard = (int[]) currentBoard.Clone();
@@ -466,7 +466,7 @@ namespace Moteur
         // Fonction principale
         public Queue ProchainsEnvironnements(Environment curEnv, int signe, bool attackOnly)
         {
-            Mobility = 0;
+            _mobility = 0;
             int[] currentBoard = curEnv.Board;
             Queue prochainsEnv = new Queue();
             int monRoi = Array.IndexOf(currentBoard, signe * R);
@@ -478,6 +478,7 @@ namespace Moteur
                     Mvt = null
                 };
                 prochainsEnv.Enqueue(echecEnv);
+                curEnv.Mobility = _mobility;
                 return prochainsEnv;
             }
             _attackBoard = fill_attack_board(currentBoard, signe);
@@ -486,6 +487,7 @@ namespace Moteur
             if (_attackBoard[monRoi] >= 2)
             {
                 ArrayList indexR = mvt_roi(currentBoard, monRoi, signe, attackOnly);
+                curEnv.Mobility = _mobility;
                 return fill_queue(indexR, signe * R, currentBoard, monRoi, curEnv, signe);
             }
             
@@ -574,7 +576,7 @@ namespace Moteur
             // Détection d'un échec simple
             if (_attackBoard[monRoi] == 1)
             {
-                Mobility = 0;
+                _mobility = 0;
                 Queue aux = new Queue(prochainsEnv);
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
@@ -585,10 +587,11 @@ namespace Moteur
                          || stopAttack(e, signe))
                     {
                         prochainsEnv.Enqueue(e);
-                        Mobility++;
+                        _mobility++;
                     }
                 }
             }
+            curEnv.Mobility = _mobility;
             return prochainsEnv;
         }
     }
