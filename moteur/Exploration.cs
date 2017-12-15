@@ -130,6 +130,7 @@ namespace Moteur
             }
             if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
             Queue QueueEnvironments = MovesCalculator.ProchainsEnvironnements(ref env, env.CurrentPlayer, false); // false : all moves, not only captures
+            if (QueueEnvironments.Count==0) {return env; }
             ArrayList ListEnvironmentsRnd = Randomize(QueueEnvironments);
             List<Environment> ListEnvironments = new List<Environment>();
             foreach (Environment e in ListEnvironmentsRnd)
