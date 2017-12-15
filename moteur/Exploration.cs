@@ -164,24 +164,23 @@ namespace Moteur
             l.Enqueue(remainingDepth);
             if (hashtbl.Contains(bestScore.Board))
             {
-                Queue q2 = new Queue();
+                /*Queue q2 = new Queue();
                 q2 = (Queue)hashtbl[bestScore.Board];
                 Environment Bscore = (Environment)q2.Dequeue();
                 int a = (int)q2.Dequeue();
                 int b = (int)q2.Dequeue();
                 int depth = (int)q2.Dequeue();
                 if (depth > remainingDepth)
-                {
+                {*/
                     hashtbl.Remove(bestScore.Board);
-                    hashtbl.Add(bestScore.Board, l);
+                    hashtbl.Add(bestScore.Board, new Queue(l));
                     return bestScore;
-                }
+                //}
             }else
             {
-                hashtbl.Add(bestScore.Board, l);
+                hashtbl.Add(bestScore.Board, new Queue(l));
                 return bestScore;
             }
-            return bestScore;
         }
 
         public Environment RechercheCalme(int alpha, int beta, Environment env)
