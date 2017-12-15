@@ -381,6 +381,7 @@ namespace Moteur
 
         private Queue fill_queue(ArrayList indexTab, int piece, int[] currentBoard, int curPos, Environment curEnv, int signe)
         {
+            
             Queue auxQueue = new Queue();
             foreach (int nextPos in indexTab)
             {
@@ -422,7 +423,7 @@ namespace Moteur
                 }
                  
                 /*
-                Console.WriteLine("tmpAttackBoard");
+                Console.WriteLine("tmpAttackBoard for "+nextPos);
                 for(int i =0; i < tmpAttackBoard.Length; i++)
                 {
                     if (i%8 == 0) Console.WriteLine("");
@@ -431,7 +432,7 @@ namespace Moteur
                 Console.WriteLine("\n------------------");
                 */
                 
-                if (tmpAttackBoard[monRoi] == 0)
+                if (tmpAttackBoard[monRoi] == 0 || Math.Abs(piece) == R)
                 {
                     // Creating environment
                     Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new[] {_tabCoord[curPos], _tabCoord[nextPos], ""});
@@ -439,6 +440,7 @@ namespace Moteur
                     auxQueue.Enqueue(env);   
                 }
             }
+            
             return auxQueue;
         }
 
@@ -568,6 +570,7 @@ namespace Moteur
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
                 {
+                    //Console.WriteLine("{"+e.Mvt[0]+", "+e.Mvt[1]+"} :\t"+stopAttack(e, signe));
                     if ( (_toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]))
                          || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R)
                          || stopAttack(e, signe))
