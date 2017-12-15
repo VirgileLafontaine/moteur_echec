@@ -379,7 +379,7 @@ namespace Moteur
             return attackBoard;
         }
 
-        private Queue fill_queue(ArrayList indexTab, int piece, int[] currentBoard, int curPos, Environment curEnv)
+        private Queue fill_queue(ArrayList indexTab, int piece, int[] currentBoard, int curPos, Environment curEnv, int signe)
         {
             Queue auxQueue = new Queue();
             foreach (int nextPos in indexTab)
@@ -390,7 +390,37 @@ namespace Moteur
                 auxBoard[nextPos] = piece;
                 int[] tmpAttackBoard = fill_attack_board(auxBoard, curEnv.CurrentPlayer);
                 int monRoi = Array.IndexOf(currentBoard, curEnv.CurrentPlayer * R);
-                
+                int bonusOrdre = 0;
+                if (signe * auxBoard[nextPos] < 0)
+                {
+                    switch (-signe * auxBoard[nextPos]) {
+                        case P :
+                            bonusOrdre += Exploration.PoidsPion;
+                            break;
+                        case Cg:
+                            bonusOrdre += Exploration.PoidsCavalier;
+                            break;
+                        case Cd:
+                            bonusOrdre += Exploration.PoidsCavalier;
+                            break;
+                        case Tg:
+                            bonusOrdre += Exploration.PoidsTour;
+                            break;
+                        case Td:
+                            bonusOrdre += Exploration.PoidsTour;
+                            break;
+                        case F:
+                            bonusOrdre += Exploration.PoidsFou;
+                            break;
+                        case D:
+                            bonusOrdre += Exploration.PoidsReine;
+                            break;
+                        case R:
+                            bonusOrdre += Exploration.PoidsRoi;
+                            break;
+                    }
+                }
+                 
                 /*
                 Console.WriteLine("tmpAttackBoard");
                 for(int i =0; i < tmpAttackBoard.Length; i++)
@@ -405,6 +435,7 @@ namespace Moteur
                 {
                     // Creating environment
                     Environment env = new Environment(-curEnv.CurrentPlayer,auxBoard,curEnv,new[] {_tabCoord[curPos], _tabCoord[nextPos], ""});
+                    env.Ordre = bonusOrdre;
                     auxQueue.Enqueue(env);   
                 }
             }
@@ -445,7 +476,7 @@ namespace Moteur
             if (_attackBoard[monRoi] >= 2)
             {
                 ArrayList indexR = mvt_roi(currentBoard, monRoi, signe, attackOnly);
-                return fill_queue(indexR, signe * R, currentBoard, monRoi, curEnv);
+                return fill_queue(indexR, signe * R, currentBoard, monRoi, curEnv, signe);
             }
             
             for (int i = 0; i < currentBoard.Length; i++)
@@ -457,7 +488,7 @@ namespace Moteur
                         ArrayList indexP = mvt_pion(currentBoard, i, signe, attackOnly);
                         if (indexP.Count != 0)
                         {
-                            foreach (var e in fill_queue(indexP, signe * P, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexP, signe * P, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -466,7 +497,7 @@ namespace Moteur
                     case Tg:
                         ArrayList indexTg = mvt_tour(currentBoard, i, signe, attackOnly);
                         if (indexTg.Count != 0) {
-                            foreach (var e in fill_queue(indexTg, signe * Tg, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexTg, signe * Tg, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -475,7 +506,7 @@ namespace Moteur
                     case Td:
                         ArrayList indexTd = mvt_tour(currentBoard, i, signe, attackOnly);
                         if (indexTd.Count != 0) {
-                            foreach (var e in fill_queue(indexTd, signe * Td, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexTd, signe * Td, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -484,7 +515,7 @@ namespace Moteur
                     case Cg:
                         ArrayList indexCg = mvt_cavalier(currentBoard, i, signe, attackOnly);
                         if (indexCg.Count != 0) {
-                            foreach (var e in fill_queue(indexCg, signe * Cg, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexCg, signe * Cg, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -493,7 +524,7 @@ namespace Moteur
                     case Cd:
                         ArrayList indexCd = mvt_cavalier(currentBoard, i, signe, attackOnly);
                         if (indexCd.Count != 0) {
-                            foreach (var e in fill_queue(indexCd, signe * Cd, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexCd, signe * Cd, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -502,7 +533,7 @@ namespace Moteur
                     case F:
                         ArrayList indexF = mvt_fou(currentBoard, i, signe, attackOnly);
                         if (indexF.Count != 0) {
-                            foreach (var e in fill_queue(indexF, signe * F, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexF, signe * F, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -512,7 +543,7 @@ namespace Moteur
                         ArrayList indexD = mvt_tour(currentBoard, i, signe, attackOnly);
                         indexD.AddRange(mvt_fou(currentBoard, i, signe, attackOnly));
                         if (indexD.Count != 0) {
-                            foreach (var e in fill_queue(indexD, signe * D, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexD, signe * D, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -521,7 +552,7 @@ namespace Moteur
                     case R:
                         ArrayList indexR = mvt_roi(currentBoard, i, signe, attackOnly);
                         if (indexR.Count != 0) {
-                            foreach (var e in fill_queue(indexR, signe * R, currentBoard, i, curEnv))
+                            foreach (var e in fill_queue(indexR, signe * R, currentBoard, i, curEnv, signe))
                             {
                                 prochainsEnv.Enqueue(e);
                             }
@@ -545,7 +576,6 @@ namespace Moteur
                     }
                 }
             }
-            
             return prochainsEnv;
         }
     }

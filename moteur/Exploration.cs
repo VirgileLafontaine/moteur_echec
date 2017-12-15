@@ -22,7 +22,7 @@ namespace Moteur
         private const int R = 6; //roi
         private Random rng = new Random();
         //poids d'importance des pieces sur le terrain
-        public int PoidsPion = 100,
+        static public int PoidsPion = 100,
             PoidsCavalier = 320,
             PoidsFou = 330,
             PoidsTour = 500,
@@ -129,9 +129,11 @@ namespace Moteur
                 return env;
             }
             if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
-            Queue listEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
-            ArrayList listEnvironmentsRng = Randomize(listEnvironments);
-            foreach (Environment mouvement in listEnvironmentsRng)
+            Queue QueueEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
+            List<Environment> ListEnvironments = new List<Environment>;
+            for each (QueueEnvironments);
+            List<Environment> ListEnvironmentsOrdered = ListEnvironments.OrderBy(o => o.Ordre).ToList();
+            foreach (Environment mouvement in ListEnvironmentsOrdered)
             {
                 Environment val = AlphaBeta(mouvement, -beta, -localAlpha, remainingDepth - 1);
                 val.Score = val.Score * (-1);
