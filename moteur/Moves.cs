@@ -387,15 +387,12 @@ namespace Moteur
             {
                 // Next board
                 int[] auxBoard = (int[]) currentBoard.Clone();
-                auxBoard[curPos] = 0;
-                auxBoard[nextPos] = piece;
-                int[] tmpAttackBoard = fill_attack_board(auxBoard, curEnv.CurrentPlayer);
-                int monRoi = Array.IndexOf(currentBoard, curEnv.CurrentPlayer * R);
                 int bonusOrdre = 0;
                 if (signe * auxBoard[nextPos] < 0)
                 {
-                    switch (-signe * auxBoard[nextPos]) {
-                        case P :
+                    switch (-signe * auxBoard[nextPos])
+                    {
+                        case P:
                             bonusOrdre += Exploration.PoidsPion;
                             break;
                         case Cg:
@@ -421,6 +418,11 @@ namespace Moteur
                             break;
                     }
                 }
+                auxBoard[curPos] = 0;
+                auxBoard[nextPos] = piece;
+                int[] tmpAttackBoard = fill_attack_board(auxBoard, curEnv.CurrentPlayer);
+                int monRoi = Array.IndexOf(currentBoard, curEnv.CurrentPlayer * R);
+                
                  
                 /*
                 Console.WriteLine("tmpAttackBoard for "+nextPos);
@@ -466,7 +468,7 @@ namespace Moteur
             {
                 Environment echecEnv = new Environment
                 {
-                    Score = signe * -999999,
+                    Score =  -999999,
                     Mvt = null
                 };
                 prochainsEnv.Enqueue(echecEnv);

@@ -130,8 +130,12 @@ namespace Moteur
             }
             if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
             Queue QueueEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
-            List<Environment> ListEnvironments = new List<Environment>;
-            for each (QueueEnvironments);
+            ArrayList ListEnvironmentsRnd = Randomize(QueueEnvironments);
+            List<Environment> ListEnvironments = new List<Environment>();
+            foreach (Environment e in ListEnvironmentsRnd)
+            {
+                ListEnvironments.Add(e);
+            }
             List<Environment> ListEnvironmentsOrdered = ListEnvironments.OrderBy(o => o.Ordre).ToList();
             foreach (Environment mouvement in ListEnvironmentsOrdered)
             {
