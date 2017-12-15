@@ -464,7 +464,7 @@ namespace Moteur
         }
         
         // Fonction principale
-        public Queue ProchainsEnvironnements(Environment curEnv, int signe, bool attackOnly)
+        public Queue ProchainsEnvironnements(ref Environment curEnv, int signe, bool attackOnly)
         {
             _mobility = 0;
             int[] currentBoard = curEnv.Board;
