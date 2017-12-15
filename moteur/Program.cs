@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
 using System.Diagnostics;
-using System.Collections;
 
 namespace Moteur
 {
@@ -81,7 +78,7 @@ namespace Moteur
                                     if (tabVal[i] <= 0) reste.Add(tabCoord[i]);
                                 }
                                 env.Board = tabVal;
-                                Environment choix = expl.AlphaBeta(env,-999999999,999999999,profondeur);
+                                Environment choix = expl.AlphaBeta(env,-999999999,999999999,2);
                                 Environment tmp = choix;
                                 while (tmp.PreviousEnvironment.Mvt !=null)
                                 {
