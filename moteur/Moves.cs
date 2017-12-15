@@ -10,8 +10,7 @@ namespace Moteur
         private ArrayList _toAttack = new ArrayList(); 
 
         //Coordonnées des cases
-        string[] _tabCoord = new string[]
-        {
+        private readonly string[] _tabCoord = new string[] {
             "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
             "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
             "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
@@ -412,6 +411,18 @@ namespace Moteur
             return auxQueue;
         }
 
+        private bool stopAttack(Environment e, int signe)
+        {
+            int[] tmpAttackBoard = fill_attack_board(e.Board, signe);
+            int monRoi = Array.IndexOf(e.Board, signe * R);
+ 
+            if (tmpAttackBoard[monRoi] == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        
         // Fonction principale
         public Queue ProchainsEnvironnements(Environment curEnv, int signe, bool attackOnly)
         {
@@ -420,9 +431,11 @@ namespace Moteur
             int monRoi = Array.IndexOf(currentBoard, signe * R);
             if (monRoi == -1)
             {
-                Environment echecEnv = new Environment();
-                echecEnv.Score = signe*-999999;
-                echecEnv.Mvt = null;
+                Environment echecEnv = new Environment
+                {
+                    Score = signe * -999999,
+                    Mvt = null
+                };
                 prochainsEnv.Enqueue(echecEnv);
                 return prochainsEnv;
             }
@@ -437,7 +450,7 @@ namespace Moteur
             
             for (int i = 0; i < currentBoard.Length; i++)
             {
-                // Pièces adverses
+                // Mes pièces
                 switch (signe * currentBoard[i])
                 {
                     case P:
@@ -524,7 +537,9 @@ namespace Moteur
                 prochainsEnv.Clear();
                 foreach (Environment e in aux)
                 {
-                    if ( _toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]) || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R))
+                    if ( (_toAttack.Count != 0 && (e.Mvt[1].Equals(_tabCoord[(int) _toAttack[0]]))
+                         || currentBoard[Array.IndexOf(_tabCoord, e.Mvt[0])] == signe*R)
+                         || stopAttack(e, signe))
                     {
                         prochainsEnv.Enqueue(e);
                     }
