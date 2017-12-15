@@ -7,10 +7,12 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
 using System.Diagnostics;
+using System.Collections;
 
 namespace Moteur
 {
     class Program
+        
     {
        static void Main(string[] args)
         {
@@ -64,6 +66,7 @@ namespace Moteur
                                 /******************************************************************************************************/
                                 /***************************************** ECRIRE LE CODE DE L'IA *************************************/
                                 /******************************************************************************************************/
+                                
                                 Exploration expl = new Exploration();
                                 Environment env = new Environment();
                                 env.CurrentPlayer = Environment.White;

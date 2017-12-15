@@ -10,6 +10,7 @@ namespace Moteur
 {
     public class Exploration
     {
+        public static Hashtable hashtbl = new Hashtable();
         private const int Pp = 10; //pion passant
         private const int P = 1; //pion
         private const int Tg = 21; //tour gauche (different pour le roque)
@@ -106,8 +107,23 @@ namespace Moteur
         }
         public Environment AlphaBeta(Environment env, int alpha, int beta, int remainingDepth)
         {
+            if (hashtbl.Contains(env.Board))
+            {
+                Queue q = new Queue();
+                Environment Bscore = (Environment)q.Dequeue();
+                int a = (int)q.Dequeue();
+                int b = (int)q.Dequeue();
+                int rdepth = (int)q.Dequeue();
+                if (rdepth < remainingDepth)
+                {
+                    env.Score = Bscore.Score;
+                    alpha = a;
+                    beta = b;
+                    return env;
+                }
+            }
             int localAlpha = alpha;
-            Environment bestScore = new Environment(-999999);
+            Environment bestScore = new Environment(-9999999);
             if (alpha > beta)
             {
                 return env;
@@ -141,6 +157,30 @@ namespace Moteur
                 }
             }*/
         }
+            Queue l = new Queue();
+            l.Enqueue(bestScore);
+            l.Enqueue(alpha);
+            l.Enqueue(beta);
+            l.Enqueue(remainingDepth);
+            if (hashtbl.Contains(bestScore.Board))
+            {
+                Queue q2 = new Queue();
+                q2 = (Queue)hashtbl[bestScore.Board];
+                Environment Bscore = (Environment)q2.Dequeue();
+                int a = (int)q2.Dequeue();
+                int b = (int)q2.Dequeue();
+                int depth = (int)q2.Dequeue();
+                if (depth > remainingDepth)
+                {
+                    hashtbl.Remove(bestScore.Board);
+                    hashtbl.Add(bestScore.Board, l);
+                    return bestScore;
+                }
+            }else
+            {
+                hashtbl.Add(bestScore.Board, l);
+                return bestScore;
+            }
             return bestScore;
         }
 
