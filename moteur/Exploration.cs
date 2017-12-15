@@ -89,8 +89,7 @@ namespace Moteur
             }
             //TO DO mobility (nombre de mouvements safe possibles par piece avec facteur
             //score = score materiel + mobilité
-            MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false);
-            return score + scorePosition + MovesCalculator.Mobility;
+            return score + scorePosition + env.Mobility;
         }
         public ArrayList Randomize(Queue mvts)
         {
@@ -130,7 +129,7 @@ namespace Moteur
                 return env;
             }
             if (remainingDepth == 0) return RechercheCalme(alpha, beta, env);
-            Queue QueueEnvironments = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, false); // false : all moves, not only captures
+            Queue QueueEnvironments = MovesCalculator.ProchainsEnvironnements(&env, env.CurrentPlayer, false); // false : all moves, not only captures
             ArrayList ListEnvironmentsRnd = Randomize(QueueEnvironments);
             List<Environment> ListEnvironments = new List<Environment>();
             foreach (Environment e in ListEnvironmentsRnd)
@@ -203,7 +202,7 @@ namespace Moteur
                 env.Score = standPat;
                 alpha = standPat;
             }
-            Queue mouvementsCapture = MovesCalculator.ProchainsEnvironnements(env, env.CurrentPlayer, true); // true : only capture moves
+            Queue mouvementsCapture = MovesCalculator.ProchainsEnvironnements(&env, env.CurrentPlayer, true); // true : only capture moves
 
             if (mouvementsCapture.Count == 0)
             {
